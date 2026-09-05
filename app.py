@@ -5,14 +5,13 @@ import os
 import math
 
 
-app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))
 
 
 # =========================================
 # FILE PATHS
 # =========================================
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 RISK_DATA = os.path.join(BASE_DIR, "data", "mizoram_risk_predictions.csv")
 

@@ -21,3 +21,6 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Accidental nested workspace copy
+NE-SHIELD-main/
