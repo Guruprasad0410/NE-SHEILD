@@ -1,0 +1,5 @@
+.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install pandas numpy scikit-learn joblib flask folium
+python train_model.py
+python app.py

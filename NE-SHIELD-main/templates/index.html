@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NE-SHIELD | Landslide Risk Intelligence</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f172a, #1e3a5f);
+            color: white;
+            padding: 18px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .tagline {
+            font-size: 12px;
+            color: #cbd5e1;
+            margin-top: 3px;
+        }
+
+        .status {
+            background: #166534;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 94%;
+            max-width: 1450px;
+            margin: 30px auto;
+        }
+
+        .hero {
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: 31px;
+            color: #0f172a;
+        }
+
+        .hero p {
+            color: #64748b;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        /* SUMMARY CARDS */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 17px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 21px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        .card h3 {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 9px;
+        }
+
+        .number {
+            font-size: 29px;
+            font-weight: bold;
+        }
+
+        .total {
+            border-top: 4px solid #2563eb;
+        }
+
+        .low {
+            border-top: 4px solid #22c55e;
+        }
+
+        .moderate {
+            border-top: 4px solid #eab308;
+        }
+
+        .high {
+            border-top: 4px solid #f97316;
+        }
+
+        .very-high {
+            border-top: 4px solid #dc2626;
+        }
+
+        /* GENERAL SECTION */
+
+        .section {
+            background: white;
+            border-radius: 14px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+        }
+
+        .section h2 {
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .section-description {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        /* WORKFLOW */
+
+        .workflow {
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 22px;
+        }
+
+        .workflow-step {
+            flex: 1;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 17px 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .workflow-number {
+            width: 31px;
+            height: 31px;
+            margin: 0 auto 9px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .workflow-step strong {
+            font-size: 13px;
+            display: block;
+            line-height: 1.4;
+        }
+
+        .workflow-arrow {
+            display: flex;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        /* FORM */
+
+        .form-heading {
+            margin-top: 27px;
+            margin-bottom: 15px;
+            padding-bottom: 9px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 18px;
+            color: #0f172a;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #334155;
+            margin-bottom: 7px;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 11px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+            background: white;
+            outline: none;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #2563eb;
+        }
+
+        .location-note {
+            margin-top: 14px;
+            background: #eff6ff;
+            color: #1e40af;
+            border-left: 5px solid #2563eb;
+            padding: 14px;
+            border-radius: 7px;
+            line-height: 1.6;
+        }
+
+        .analyze-btn {
+            margin-top: 25px;
+            background: #2563eb;
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .analyze-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .error-box {
+            margin-top: 25px;
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 5px solid #dc2626;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        /* RESULTS */
+
+        .result-container {
+            margin-top: 30px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+        }
+
+        .result-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 19px;
+            border-radius: 10px;
+        }
+
+        .result-card h4 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .risk-Low {
+            color: #16a34a;
+        }
+
+        .risk-Moderate {
+            color: #ca8a04;
+        }
+
+        .risk-High {
+            color: #ea580c;
+        }
+
+        .risk-Very-High {
+            color: #dc2626;
+        }
+
+        /* ENVIRONMENT */
+
+        .auto-data-box {
+            margin-top: 24px;
+            padding: 22px;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+        }
+
+        .auto-data-box h3 {
+            color: #0f172a;
+            margin-bottom: 7px;
+        }
+
+        .auto-data-box > p {
+            color: #64748b;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        .environment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .environment-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .environment-card strong {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .environment-card span {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .source {
+            display: block;
+            font-size: 11px;
+            font-weight: normal;
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        .reference-box {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 14px;
+            border-radius: 8px;
+            margin-top: 17px;
+            line-height: 1.7;
+        }
+
+        /* WARNING */
+
+        .warning-box {
+            margin-top: 22px;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .warning-Low {
+            background: #dcfce7;
+            border: 2px solid #22c55e;
+            color: #166534;
+        }
+
+        .warning-Moderate {
+            background: #fef9c3;
+            border: 2px solid #eab308;
+            color: #854d0e;
+        }
+
+        .warning-High {
+            background: #ffedd5;
+            border: 2px solid #f97316;
+            color: #9a3412;
+        }
+
+        .warning-Very-High {
+            background: #fee2e2;
+            border: 2px solid #dc2626;
+            color: #991b1b;
+        }
+
+        .warning-box h3 {
+            font-size: 15px;
+            margin-bottom: 9px;
+        }
+
+        .warning-value {
+            font-size: 33px;
+            font-weight: bold;
+        }
+
+        /* IMPACT */
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .impact-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 16px;
+            border-radius: 9px;
+        }
+
+        .impact-card strong {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            margin-bottom: 7px;
+        }
+
+        /* PRIORITY */
+
+        .priority-box {
+            margin-top: 24px;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .priority-LOW {
+            background: #dcfce7;
+            border: 2px solid #22c55e;
+            color: #166534;
+        }
+
+        .priority-MEDIUM {
+            background: #fef9c3;
+            border: 2px solid #eab308;
+            color: #854d0e;
+        }
+
+        .priority-HIGH {
+            background: #ffedd5;
+            border: 2px solid #f97316;
+            color: #9a3412;
+        }
+
+        .priority-CRITICAL {
+            background: #fee2e2;
+            border: 3px solid #dc2626;
+            color: #991b1b;
+        }
+
+        .priority-value {
+            font-size: 35px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        .priority-score {
+            margin-bottom: 13px;
+        }
+
+        .recommended-action {
+            max-width: 900px;
+            margin: auto;
+            line-height: 1.6;
+        }
+
+        /* MAP */
+
+        .map-frame {
+            width: 100%;
+            height: 620px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .map-selected-note {
+            margin-bottom: 15px;
+            background: #eff6ff;
+            color: #1e40af;
+            border-left: 5px solid #2563eb;
+            padding: 14px;
+            border-radius: 7px;
+            line-height: 1.6;
+        }
+
+        /* DATA SOURCES */
+
+        .source-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .source-card {
+            padding: 18px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+        }
+
+        .source-card h4 {
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .source-card p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* NOTES */
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .info-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        .info-box h3 {
+            margin-bottom: 14px;
+        }
+
+        .info-box p {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 9px;
+        }
+
+        .prototype-note {
+            background: #fff7ed;
+            color: #9a3412;
+            border-left: 5px solid #f97316;
+            padding: 16px;
+            border-radius: 7px;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-top: 40px;
+            background: #0f172a;
+            color: #cbd5e1;
+            text-align: center;
+            padding: 22px;
+        }
+
+        @media(max-width:1100px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .form-grid,
+            .result-grid,
+            .environment-grid,
+            .impact-grid,
+            .source-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .workflow {
+                flex-wrap: wrap;
+            }
+
+            .workflow-arrow {
+                display: none;
+            }
+
+            .workflow-step {
+                min-width: 28%;
+            }
+        }
+
+        @media(max-width:700px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            .cards,
+            .form-grid,
+            .result-grid,
+            .environment-grid,
+            .impact-grid,
+            .source-grid,
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+{% include '_ne_shield_intro.html' %}
+
+<header>
+
+    <div>
+        <div class="logo">
+            NE-<span>SHIELD</span>
+        </div>
+
+        <div class="tagline">
+            North-East Smart Hazard Intelligence & Emergency Landslide Decision Support
+        </div>
+    </div>
+
+    <div class="status">
+        ● Prototype Online
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="hero">
+
+        <h1>
+            Mizoram Landslide Risk Intelligence Dashboard
+        </h1>
+
+        <p>
+            AI-assisted landslide susceptibility mapping,
+            rainfall-triggered early warning, impact assessment
+            and emergency response prioritization.
+        </p>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="cards">
+
+        <div class="card total">
+            <h3>TOTAL ANALYZED LOCATIONS</h3>
+            <div class="number">{{ total }}</div>
+        </div>
+
+        <div class="card low">
+            <h3>LOW SUSCEPTIBILITY</h3>
+            <div class="number">{{ low }}</div>
+        </div>
+
+        <div class="card moderate">
+            <h3>MODERATE SUSCEPTIBILITY</h3>
+            <div class="number">{{ moderate }}</div>
+        </div>
+
+        <div class="card high">
+            <h3>HIGH SUSCEPTIBILITY</h3>
+            <div class="number">{{ high }}</div>
+        </div>
+
+        <div class="card very-high">
+            <h3>VERY HIGH SUSCEPTIBILITY</h3>
+            <div class="number">{{ very_high }}</div>
+        </div>
+
+    </div>
+
+
+    <!-- WORKFLOW -->
+
+    <div class="section">
+
+        <h2>How NE-SHIELD Works</h2>
+
+        <p class="section-description">
+            NE-SHIELD combines environmental susceptibility,
+            recent rainfall conditions and local exposure information
+            into one decision-support pipeline.
+        </p>
+
+
+        <div class="workflow">
+
+            <div class="workflow-step">
+                <div class="workflow-number">1</div>
+                <strong>Location</strong>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <div class="workflow-number">2</div>
+                <strong>Environmental Data</strong>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <div class="workflow-number">3</div>
+                <strong>ML Susceptibility</strong>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <div class="workflow-number">4</div>
+                <strong>Rainfall Trigger</strong>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <div class="workflow-number">5</div>
+                <strong>Early Warning</strong>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <div class="workflow-number">6</div>
+                <strong>Impact Analysis</strong>
+            </div>
+
+            <div class="workflow-arrow">→</div>
+
+            <div class="workflow-step">
+                <div class="workflow-number">7</div>
+                <strong>Emergency Priority</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ANALYSIS -->
+
+    <div class="section">
+
+        <h2>Analyze a Location</h2>
+
+        <p class="section-description">
+            Select a coordinate and provide recent rainfall and exposure
+            information. Environmental features are automatically obtained
+            from the nearest reference point in the prototype dataset.
+        </p>
+
+
+        <form method="POST">
+
+            <h3 class="form-heading">
+                1. Geographic Location
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="input-group">
+
+                    <label>Latitude</label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        name="latitude"
+                        placeholder="Example: 23.73"
+                        value="{% if prediction and not prediction.error %}{{ prediction.latitude }}{% endif %}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Longitude</label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        name="longitude"
+                        placeholder="Example: 92.72"
+                        value="{% if prediction and not prediction.error %}{{ prediction.longitude }}{% endif %}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="location-note">
+                Enter a coordinate within the current Mizoram prototype
+                study area. NE-SHIELD will automatically find the nearest
+                environmental reference point.
+            </div>
+
+
+            <h3 class="form-heading">
+                2. Recent Rainfall Conditions
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="input-group">
+
+                    <label>Rainfall in Last 24 Hours (mm)</label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        min="0"
+                        name="rain_24h"
+                        placeholder="Example: 125"
+                        value="{% if prediction and not prediction.error %}{{ prediction.rain_24h }}{% endif %}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Rainfall in Last 72 Hours (mm)</label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        min="0"
+                        name="rain_72h"
+                        placeholder="Example: 240"
+                        value="{% if prediction and not prediction.error %}{{ prediction.rain_72h }}{% endif %}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <h3 class="form-heading">
+                3. Impact & Exposure
+            </h3>
+
+
+            <div class="form-grid">
+
+                <div class="input-group">
+
+                    <label>Road / Transport Route Affected?</label>
+
+                    <select name="road_affected">
+
+                        <option value="no"
+                            {% if prediction and prediction.road_affected == "no" %}selected{% endif %}>
+                            No
+                        </option>
+
+                        <option value="yes"
+                            {% if prediction and prediction.road_affected == "yes" %}selected{% endif %}>
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Village / Settlement Nearby?</label>
+
+                    <select name="village_nearby">
+
+                        <option value="no"
+                            {% if prediction and prediction.village_nearby == "no" %}selected{% endif %}>
+                            No
+                        </option>
+
+                        <option value="yes"
+                            {% if prediction and prediction.village_nearby == "yes" %}selected{% endif %}>
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>Critical Facility Nearby?</label>
+
+                    <select name="critical_facility">
+
+                        <option value="no"
+                            {% if prediction and prediction.critical_facility == "no" %}selected{% endif %}>
+                            No
+                        </option>
+
+                        <option value="yes"
+                            {% if prediction and prediction.critical_facility == "yes" %}selected{% endif %}>
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="input-group">
+
+                    <label>People Potentially Exposed</label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        name="people_exposed"
+                        value="{% if prediction and not prediction.error %}{{ prediction.people_exposed }}{% else %}0{% endif %}"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <button class="analyze-btn" type="submit">
+                Analyze Location & Generate Warning
+            </button>
+
+        </form>
+
+
+        {% if prediction %}
+
+            {% if prediction.error %}
+
+                <div class="error-box">
+                    <strong>Analysis Error:</strong>
+                    {{ prediction.error }}
+                </div>
+
+            {% else %}
+
+
+                <div class="result-container">
+
+                    <h3 class="form-heading">
+                        Analysis Result
+                    </h3>
+
+
+                    <div class="result-grid">
+
+                        <div class="result-card">
+
+                            <h4>Selected Location</h4>
+
+                            <div class="result-value">
+                                {{ prediction.latitude }},
+                                {{ prediction.longitude }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card">
+
+                            <h4>Reference Distance</h4>
+
+                            <div class="result-value">
+                                {{ prediction.nearest_distance }} km
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card">
+
+                            <h4>Reference Coordinate</h4>
+
+                            <div class="result-value">
+                                {{ prediction.nearest_latitude }},
+                                {{ prediction.nearest_longitude }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- AUTOMATIC DATA -->
+
+                    <div class="auto-data-box">
+
+                        <h3>
+                            Automatically Retrieved Environmental Data
+                        </h3>
+
+                        <p>
+                            Static environmental features used by the
+                            Random Forest susceptibility model.
+                        </p>
+
+
+                        <div class="environment-grid">
+
+                            <div class="environment-card">
+
+                                <strong>Annual Rainfall</strong>
+
+                                <span>
+                                    {{ prediction.rainfall }} mm/year
+                                </span>
+
+                                <small class="source">
+                                    Source: NASA IMERG climatology
+                                </small>
+
+                            </div>
+
+
+                            <div class="environment-card">
+
+                                <strong>Elevation</strong>
+
+                                <span>
+                                    {{ prediction.elevation }} m
+                                </span>
+
+                                <small class="source">
+                                    Source: NASA SRTM
+                                </small>
+
+                            </div>
+
+
+                            <div class="environment-card">
+
+                                <strong>Slope</strong>
+
+                                <span>
+                                    {{ prediction.slope }}°
+                                </span>
+
+                                <small class="source">
+                                    Derived from NASA SRTM DEM
+                                </small>
+
+                            </div>
+
+
+                            <div class="environment-card">
+
+                                <strong>Clay</strong>
+
+                                <span>
+                                    {{ prediction.clay }} g/kg
+                                </span>
+
+                                <small class="source">
+                                    Source: ISRIC SoilGrids
+                                </small>
+
+                            </div>
+
+
+                            <div class="environment-card">
+
+                                <strong>Sand</strong>
+
+                                <span>
+                                    {{ prediction.sand }} g/kg
+                                </span>
+
+                                <small class="source">
+                                    Source: ISRIC SoilGrids
+                                </small>
+
+                            </div>
+
+
+                            <div class="environment-card">
+
+                                <strong>Silt</strong>
+
+                                <span>
+                                    {{ prediction.silt }} g/kg
+                                </span>
+
+                                <small class="source">
+                                    Source: ISRIC SoilGrids
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="reference-box">
+
+                            <strong>Nearest Environmental Reference:</strong>
+
+                            {{ prediction.nearest_latitude }},
+                            {{ prediction.nearest_longitude }}
+
+                            <br>
+
+                            <strong>Distance:</strong>
+                            {{ prediction.nearest_distance }} km
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ML -->
+
+                    <h3 class="form-heading">
+                        AI Landslide Susceptibility Analysis
+                    </h3>
+
+
+                    <div class="result-grid">
+
+                        <div class="result-card">
+
+                            <h4>ML Susceptibility Class</h4>
+
+                            <div class="
+                                result-value
+                                risk-{{ prediction.risk | replace(' ', '-') }}
+                            ">
+                                {{ prediction.risk }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card">
+
+                            <h4>Susceptibility Score</h4>
+
+                            <div class="result-value">
+                                {{ prediction.score }}%
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card">
+
+                            <h4>Rainfall Trigger</h4>
+
+                            <div class="
+                                result-value
+                                risk-{{ prediction.rainfall_trigger | replace(' ', '-') }}
+                            ">
+                                {{ prediction.rainfall_trigger }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card">
+
+                            <h4>Recent 24h Rainfall</h4>
+
+                            <div class="result-value">
+                                {{ prediction.rain_24h }} mm
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-card">
+
+                            <h4>Recent 72h Rainfall</h4>
+
+                            <div class="result-value">
+                                {{ prediction.rain_72h }} mm
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- WARNING -->
+
+                    <div class="
+                        warning-box
+                        warning-{{ prediction.warning | replace(' ', '-') }}
+                    ">
+
+                        <h3>
+                            CURRENT LANDSLIDE EARLY WARNING
+                        </h3>
+
+                        <div class="warning-value">
+                            {{ prediction.warning }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- IMPACT -->
+
+                    <h3 class="form-heading">
+                        Impact Assessment
+                    </h3>
+
+
+                    <div class="impact-grid">
+
+                        <div class="impact-card">
+
+                            <strong>Road Affected</strong>
+
+                            {% if prediction.road_affected == "yes" %}
+                                YES
+                            {% else %}
+                                NO
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="impact-card">
+
+                            <strong>Settlement Nearby</strong>
+
+                            {% if prediction.village_nearby == "yes" %}
+                                YES
+                            {% else %}
+                                NO
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="impact-card">
+
+                            <strong>Critical Facility</strong>
+
+                            {% if prediction.critical_facility == "yes" %}
+                                YES
+                            {% else %}
+                                NO
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="impact-card">
+
+                            <strong>People Exposed</strong>
+
+                            {{ prediction.people_exposed }}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRIORITY -->
+
+                    <div class="
+                        priority-box
+                        priority-{{ prediction.priority }}
+                    ">
+
+                        <h3>
+                            EMERGENCY RESPONSE PRIORITY
+                        </h3>
+
+                        <div class="priority-value">
+                            {{ prediction.priority }}
+                        </div>
+
+                        <div class="priority-score">
+                            Decision Priority Score:
+                            <strong>
+                                {{ prediction.priority_score }}
+                            </strong>
+                        </div>
+
+                        <div class="recommended-action">
+
+                            <strong>Recommended Action</strong>
+
+                            <br><br>
+
+                            {{ prediction.recommended_action }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- MAP -->
+
+    <div class="section">
+
+        <h2>
+            GIS Landslide Susceptibility Map
+        </h2>
+
+        <p class="section-description">
+            Spatial visualization of model-derived susceptibility
+            across the Mizoram prototype study area.
+        </p>
+
+
+        {% if prediction and not prediction.error %}
+
+            <div class="map-selected-note">
+
+                <strong>Selected Analysis Location:</strong>
+
+                {{ prediction.latitude }},
+                {{ prediction.longitude }}
+
+                <br>
+
+                The highlighted blue marker represents the
+                location currently being analyzed.
+
+            </div>
+
+
+            <iframe
+                src="/map?lat={{ prediction.latitude }}&lon={{ prediction.longitude }}&risk={{ prediction.risk | urlencode }}&warning={{ prediction.warning | urlencode }}&priority={{ prediction.priority | urlencode }}"
+                class="map-frame">
+            </iframe>
+
+        {% else %}
+
+            <iframe
+                src="/map"
+                class="map-frame">
+            </iframe>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- DATA SOURCES -->
+
+    <div class="section">
+
+        <h2>
+            Prototype Data Sources
+        </h2>
+
+        <p class="section-description">
+            NE-SHIELD combines multiple geospatial datasets instead
+            of relying on a single environmental variable.
+        </p>
+
+
+        <div class="source-grid">
+
+            <div class="source-card">
+
+                <h4>Landslide Inventory</h4>
+
+                <p>
+                    Geological Survey of India (GSI)
+                    landslide inventory used to construct
+                    the prototype training dataset.
+                </p>
+
+            </div>
+
+
+            <div class="source-card">
+
+                <h4>Rainfall</h4>
+
+                <p>
+                    NASA IMERG Final V07B climatology,
+                    June 2000–May 2023.
+                </p>
+
+            </div>
+
+
+            <div class="source-card">
+
+                <h4>Terrain</h4>
+
+                <p>
+                    NASA SRTMGL1 V003 elevation data.
+                    Terrain slope is derived from the DEM.
+                </p>
+
+            </div>
+
+
+            <div class="source-card">
+
+                <h4>Soil</h4>
+
+                <p>
+                    ISRIC SoilGrids clay, sand and silt
+                    composition for the surface soil layer.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MODEL / LIMITATIONS -->
+
+    <div class="info-grid">
+
+        <div class="info-box">
+
+            <h3>
+                AI Model
+            </h3>
+
+            <p>
+                <strong>Algorithm:</strong>
+                Random Forest Classifier
+            </p>
+
+            <p>
+                <strong>Features:</strong>
+                annual rainfall, elevation, slope,
+                clay, sand and silt.
+            </p>
+
+            <p>
+                <strong>Prototype Test Accuracy:</strong>
+                83.82%
+            </p>
+
+            <p>
+                <strong>ROC-AUC:</strong>
+                0.9059
+            </p>
+
+            <p>
+                The model estimates environmental
+                <strong>landslide susceptibility</strong>.
+            </p>
+
+        </div>
+
+
+        <div class="info-box">
+
+            <h3>
+                Prototype Scope & Limitations
+            </h3>
+
+            <p>
+                NE-SHIELD is currently demonstrated using
+                Mizoram as the prototype study area.
+            </p>
+
+            <div class="prototype-note">
+
+                <strong>Important:</strong><br><br>
+
+                The ML susceptibility score is not a guaranteed
+                probability of a future landslide.
+
+                <br><br>
+
+                Recent rainfall thresholds are configurable
+                prototype thresholds and are not official
+                operational GSI thresholds.
+
+                <br><br>
+
+                Emergency response priority is a transparent
+                rule-based decision-support score for the prototype.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+    NE-SHIELD — AI-Powered Landslide Risk Intelligence,
+    Early Warning & Emergency Decision Support
+</footer>
+
+</body>
+</html>

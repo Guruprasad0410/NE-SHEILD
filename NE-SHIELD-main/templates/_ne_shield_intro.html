@@ -1,0 +1,276 @@
+<!-- NE-SHIELD Cinematic 3D Terrain Scan Intro Partial -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+  /* Grid & scanning keyframes */
+  @keyframes scanLine {
+    0% { transform: translateY(-100%); opacity: 0; }
+    20% { opacity: 0.9; }
+    80% { opacity: 0.9; }
+    100% { transform: translateY(220%); opacity: 0; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.15); }
+  }
+  @keyframes radarSweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .scan-beam {
+    animation: scanLine 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .pulse-node {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+  .radar-beam {
+    animation: radarSweep 5s linear infinite;
+  }
+  .glow-cyan {
+    box-shadow: 0 0 25px rgba(14, 165, 233, 0.35);
+  }
+  #ne-shield-cinema {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    opacity: 1;
+    transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+    background-color: #060911;
+  }
+  #ne-shield-cinema.ns-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+</style>
+
+<div id="ne-shield-cinema" class="h-screen w-screen flex flex-col justify-between text-slate-100 relative select-none" style="background-color: #060911;">
+
+  <!-- Background Ambience & Deep Terrain Shadows -->
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(14,116,144,0.18),rgba(6,9,17,0.98)_70%)] pointer-events-none"></div>
+  <div class="absolute inset-0 bg-[linear-gradient(to_right,#0b1329_1px,transparent_1px),linear-gradient(to_bottom,#0b1329_1px,transparent_1px)] bg-[size:48px_48px] [mask-image:radial-gradient(ellipse_70%_50%_at_50%_50%,#000_60%,transparent_100%)] opacity-30 pointer-events-none"></div>
+
+  <!-- Top Metadata Bar -->
+  <header class="relative z-20 flex items-center justify-between px-10 pt-8">
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-500/30 text-cyan-400 text-xs font-mono tracking-widest uppercase">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        <span>Geospatial Risk Pipeline v2.4</span>
+      </div>
+      <span class="text-xs font-mono text-slate-400">LAT: 23.73° N / LON: 92.71° E</span>
+    </div>
+
+    <div class="flex items-center space-x-6 text-xs font-mono text-slate-400">
+      <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> GSI TACTICAL INVENTORY</span>
+      <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> NASA IMERG RAINFALL</span>
+      <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> SRTM ELEVATION &amp; SLOPE</span>
+    </div>
+  </header>
+
+  <!-- Central Isometric 3D Terrain Visualization -->
+  <main class="relative z-10 flex-1 flex flex-col items-center justify-center my-auto">
+    <div class="relative w-[780px] h-[400px] flex items-center justify-center">
+      
+      <!-- Scan Horizon Beam -->
+      <div class="absolute inset-x-0 h-28 bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent scan-beam pointer-events-none z-30"></div>
+      <div class="absolute inset-x-12 h-0.5 bg-gradient-to-r from-transparent via-cyan-400 to-transparent scan-beam pointer-events-none z-30 filter drop-shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
+
+      <!-- Isometric 3D Wireframe & Topographic Contours (SVG) -->
+      <svg class="w-full h-full filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]" viewBox="0 0 800 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="terrainGrad" x1="400" y1="50" x2="400" y2="380" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.9"/>
+            <stop offset="40%" stop-color="#0284c7" stop-opacity="0.5"/>
+            <stop offset="80%" stop-color="#0c4a6e" stop-opacity="0.2"/>
+            <stop offset="100%" stop-color="#082f49" stop-opacity="0.05"/>
+          </linearGradient>
+          <linearGradient id="meshGrad" x1="0" y1="0" x2="800" y2="400" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.2"/>
+            <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#0284c7" stop-opacity="0.1"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Base Isometric Horizon Grid -->
+        <g stroke="#1e293b" stroke-width="1" opacity="0.45">
+          <path d="M100 240 L400 370 L700 240 L400 110 Z" />
+          <path d="M160 215 L400 320 L640 215 L400 110 Z" />
+          <path d="M220 190 L400 270 L580 190 L400 110 Z" />
+          <path d="M280 165 L400 220 L520 165 L400 110 Z" />
+        </g>
+
+        <!-- Mountain Ridges / Contours (Isometric Mizoram Topography) -->
+        <!-- Layer 1: Lowest Slopes -->
+        <path d="M120 250 C 200 280, 270 310, 400 340 C 530 310, 600 280, 680 250 C 620 220, 540 190, 400 170 C 260 190, 180 220, 120 250 Z" 
+              stroke="url(#meshGrad)" stroke-width="1.2" fill="url(#terrainGrad)" fill-opacity="0.08" />
+
+        <!-- Layer 2: Intermediate Escarpments -->
+        <path d="M170 235 C 240 260, 310 285, 400 305 C 490 285, 560 260, 630 235 C 570 205, 500 180, 400 160 C 300 180, 230 205, 170 235 Z" 
+              stroke="#0284c7" stroke-width="1.4" opacity="0.6" stroke-dasharray="4 2"/>
+
+        <!-- Layer 3: Main Ridgeline & Elevation Crests -->
+        <path d="M220 215 Q 310 240 370 210 T 450 170 Q 520 210 580 225 Q 490 150 400 135 Q 310 150 220 215 Z" 
+              stroke="#38bdf8" stroke-width="1.8" fill="#0369a1" fill-opacity="0.15" />
+
+        <!-- Mountain Peak Spine Ribs -->
+        <path d="M400 135 L400 340 M310 175 L310 275 M490 175 L490 275 M250 210 L250 255 M550 210 L550 255" 
+              stroke="#38bdf8" stroke-width="1" opacity="0.3" stroke-dasharray="2 3"/>
+
+        <path d="M260 220 Q 340 170 410 160 T 540 210" stroke="#7dd3fc" stroke-width="2.2" filter="drop-shadow(0 0 4px #38bdf8)"/>
+        <path d="M300 235 Q 380 185 430 180 T 500 230" stroke="#38bdf8" stroke-width="1.5" opacity="0.8"/>
+
+        <!-- Landslide Risk Detection Nodes -->
+        <!-- Low Risk (Green) -->
+        <circle cx="250" cy="235" r="4" fill="#22c55e" class="pulse-node"/>
+        <circle cx="250" cy="235" r="10" stroke="#22c55e" stroke-width="1" opacity="0.3"/>
+        <circle cx="560" cy="230" r="4" fill="#22c55e" class="pulse-node"/>
+        
+        <!-- Moderate Risk (Yellow) -->
+        <circle cx="320" cy="210" r="4.5" fill="#eab308" class="pulse-node"/>
+        <circle cx="490" cy="240" r="4.5" fill="#eab308" class="pulse-node"/>
+        <circle cx="490" cy="240" r="12" stroke="#eab308" stroke-width="1" opacity="0.35"/>
+
+        <!-- High Risk (Orange) -->
+        <circle cx="380" cy="190" r="5" fill="#f97316" class="pulse-node"/>
+        <circle cx="440" cy="205" r="5" fill="#f97316" class="pulse-node"/>
+
+        <!-- Critical Susceptibility Cluster (Red - Aizawl Corridor) -->
+        <g class="pulse-node">
+          <circle cx="410" cy="165" r="6.5" fill="#ef4444" filter="drop-shadow(0 0 8px #ef4444)"/>
+          <circle cx="410" cy="165" r="16" stroke="#ef4444" stroke-width="1.2" opacity="0.6" stroke-dasharray="3 3"/>
+          <circle cx="428" cy="172" r="5" fill="#ef4444" filter="drop-shadow(0 0 6px #ef4444)"/>
+          <circle cx="395" cy="178" r="5" fill="#ef4444" filter="drop-shadow(0 0 6px #ef4444)"/>
+        </g>
+
+        <!-- Geospatial Pointer Tag -->
+        <g transform="translate(415, 120)">
+          <rect x="0" y="0" width="130" height="34" rx="6" fill="#0f172a" fill-opacity="0.85" stroke="#ef4444" stroke-width="1"/>
+          <text x="12" y="15" fill="#f87171" font-size="10" font-family="'JetBrains Mono', monospace" font-weight="600">CRITICAL CLUSTER</text>
+          <text x="12" y="27" fill="#94a3b8" font-size="9" font-family="'JetBrains Mono', monospace">RISK SCORE: 88.4%</text>
+          <path d="M0 17 L-15 45" stroke="#ef4444" stroke-width="1" stroke-dasharray="2 2"/>
+        </g>
+      </svg>
+
+      <!-- Center HUD Reticle -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div class="w-80 h-80 rounded-full border border-cyan-500/20 flex items-center justify-center">
+          <div class="w-72 h-72 rounded-full border border-dashed border-cyan-400/25 radar-beam"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Identity & Brand Reveal -->
+    <div class="text-center mt-6 space-y-2 z-20">
+      <div class="inline-flex items-center space-x-2">
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight">
+          <span class="text-white">NE-</span><span class="text-sky-400">SHIELD</span>
+        </h1>
+      </div>
+      <p class="text-sm md:text-base font-semibold tracking-[0.3em] uppercase text-slate-300">
+        Landslide Risk Intelligence
+      </p>
+      <div class="flex items-center justify-center space-x-3 text-xs font-mono text-cyan-400/80 tracking-widest pt-1">
+        <span>MIZORAM</span>
+        <span class="text-slate-600">•</span>
+        <span>NORTH-EAST INDIA</span>
+        <span class="text-slate-600">•</span>
+        <span>SIH INTELLIGENCE SUITE</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Bottom Action & System Ready Indicator -->
+  <footer class="relative z-20 px-10 pb-9 flex items-end justify-between">
+    <div class="flex items-center space-x-6 text-xs font-mono text-slate-400">
+      <div>
+        <span class="block text-slate-400 text-[10px]">SUSCEPTIBILITY SCAN</span>
+        <span class="text-cyan-400 font-semibold">6,888 LOCATIONS SYNCHRONIZED</span>
+      </div>
+      <div class="h-6 w-px bg-slate-800"></div>
+      <div>
+        <span class="block text-slate-400 text-[10px]">ALGORITHM MATRIX</span>
+        <span class="text-slate-200">RANDOM FOREST CLASSIFIER (AUC 0.9059)</span>
+      </div>
+    </div>
+
+    <!-- System Ready Pill with Auto-Transition hint to Dashboard -->
+    <div class="group flex items-center space-x-3 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-950/80 to-slate-900/90 border border-cyan-400/40 cursor-pointer shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+      <div class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+      </div>
+      <span class="text-xs md:text-sm font-mono font-bold tracking-widest text-emerald-400">SYSTEM READY</span>
+      <svg class="w-4 h-4 text-cyan-400 transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+      </svg>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var INTRO_ID = 'ne-shield-cinema';
+    var EXIT_DELAY = 1900;
+    var REMOVE_DELAY = 2700;
+    var FALLBACK_TIMEOUT = 3200;
+
+    function hideIntro() {
+      var el = document.getElementById(INTRO_ID);
+      if (!el || el.classList.contains('ns-hidden')) return;
+
+      el.classList.add('ns-hidden');
+
+      setTimeout(function () {
+        if (el.parentNode) {
+          el.parentNode.removeChild(el);
+        }
+
+        if (typeof window.dispatchEvent === 'function') {
+          try {
+            window.dispatchEvent(new CustomEvent('neshield:introComplete'));
+          } catch (e) {}
+        }
+      }, REMOVE_DELAY - EXIT_DELAY);
+    }
+
+    function initIntro() {
+      var el = document.getElementById(INTRO_ID);
+      if (!el) return;
+
+      var prefersReduced = false;
+      try {
+        prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      } catch (e) {
+        prefersReduced = false;
+      }
+
+      if (prefersReduced) {
+        el.style.transition = 'opacity 0.2s ease, visibility 0.2s ease';
+        EXIT_DELAY = 450;
+        REMOVE_DELAY = 700;
+      }
+
+      setTimeout(hideIntro, EXIT_DELAY);
+
+      setTimeout(function () {
+        var current = document.getElementById(INTRO_ID);
+        if (current && current.parentNode) {
+          current.parentNode.removeChild(current);
+        }
+      }, FALLBACK_TIMEOUT);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initIntro);
+    } else {
+      initIntro();
+    }
+  })();
+</script>
