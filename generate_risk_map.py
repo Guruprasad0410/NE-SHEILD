@@ -313,10 +313,21 @@ for _, row in df.iterrows():
 
 legend = """
 
+<style>
+html, body { margin:0; min-height:100%; background:#f8fafc url('/static/ne-shield-light-bg.png') center/cover fixed no-repeat; font-family:Arial, sans-serif; }
+.folium-map { position:fixed !important; top:118px !important; right:32px !important; bottom:32px !important; left:32px !important; width:auto !important; height:auto !important; border:1px solid #cbd5e1; border-radius:12px; box-shadow:0 12px 32px rgba(15,23,42,.14); }
+.ne-map-header { position:fixed; top:0; left:0; right:0; height:78px; z-index:9999; display:flex; align-items:center; justify-content:space-between; padding:0 32px; box-sizing:border-box; background:#0b132b; color:#fff; box-shadow:0 2px 10px rgba(15,23,42,.18); }
+.ne-map-brand { font-size:20px; font-weight:700; letter-spacing:-.02em; }.ne-map-brand span { color:#93ccff; }
+.ne-map-nav { display:flex; gap:5px; align-items:center; }.ne-map-nav a { color:#dbeafe; text-decoration:none; padding:8px 11px; border-radius:6px; font-size:13px; }.ne-map-nav a:hover, .ne-map-nav a.active { background:#007bb9; color:#fff; }
+.ne-map-full { border:1px solid #bfdbfe; border-radius:6px; background:#fff; color:#0b1c30; padding:8px 12px; font-weight:600; font-size:13px; cursor:pointer; }
+@media (max-width:700px) { .ne-map-header { height:auto; min-height:88px; padding:12px; flex-wrap:wrap; gap:8px; }.ne-map-nav { order:3; width:100%; overflow:auto; }.ne-map-full { display:none; } .folium-map { top:110px !important; right:12px !important; bottom:12px !important; left:12px !important; } }
+</style>
+<header class="ne-map-header"><a class="ne-map-brand" href="/" style="color:inherit;text-decoration:none">NE-<span>SHIELD</span></a><nav class="ne-map-nav"><a href="/">Dashboard</a><a href="/?view=analyze">Analyze</a><a class="active" href="/map">Risk Map</a><a href="/?view=method">About</a></nav><button class="ne-map-full" onclick="document.documentElement.requestFullscreen && document.documentElement.requestFullscreen()">View full map</button></header>
+
 <div style="
 position: fixed;
-bottom: 40px;
-left: 40px;
+bottom: 55px;
+left: 55px;
 width: 220px;
 background: white;
 border: 2px solid #555;
@@ -382,7 +393,7 @@ Very High Risk
 <br><br>
 
 <small>
-AI-based landslide susceptibility prototype
+Landslide susceptibility assessment
 </small>
 
 </div>

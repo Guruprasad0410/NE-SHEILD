@@ -1,5 +1,4 @@
 <!-- NE-SHIELD Cinematic 3D Terrain Scan Intro Partial -->
-<script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -39,14 +38,28 @@
     position: fixed;
     inset: 0;
     z-index: 2147483647;
-    opacity: 1;
-    transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease-out, visibility 0.25s ease-out;
     background-color: #060911;
   }
   #ne-shield-cinema.ns-hidden {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+  }
+  #ne-shield-cinema.ns-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  @media (max-width: 768px) {
+    #ne-shield-cinema header { padding: 1.25rem; }
+    #ne-shield-cinema header > div:last-child { display: none; }
+    #ne-shield-cinema main > div { transform: scale(0.55); margin: -5.5rem 0 -4rem; }
+    #ne-shield-cinema footer { padding: 1.25rem; }
+    #ne-shield-cinema footer > div:first-child { display: none; }
   }
 </style>
 
@@ -219,19 +232,16 @@
     var INTRO_ID = 'ne-shield-cinema';
     var EXIT_DELAY = 1900;
     var REMOVE_DELAY = 2700;
-    var FALLBACK_TIMEOUT = 3200;
+    var isTransitioning = false;
 
     function hideIntro() {
       var el = document.getElementById(INTRO_ID);
       if (!el || el.classList.contains('ns-hidden')) return;
 
+      el.classList.remove('ns-active');
       el.classList.add('ns-hidden');
 
       setTimeout(function () {
-        if (el.parentNode) {
-          el.parentNode.removeChild(el);
-        }
-
         if (typeof window.dispatchEvent === 'function') {
           try {
             window.dispatchEvent(new CustomEvent('neshield:introComplete'));
@@ -257,15 +267,45 @@
         REMOVE_DELAY = 700;
       }
 
-      setTimeout(hideIntro, EXIT_DELAY);
+      // A navigation already played its transition on the previous page.
+      // Consume that flag so the destination does not play it a second time.
+      var arrivedFromNavigation = sessionStorage.getItem('neShieldNavigationPending') === 'true';
+      if (arrivedFromNavigation) sessionStorage.removeItem('neShieldNavigationPending');
+      if (!window.neShieldStartupActive && !arrivedFromNavigation) showIntro(prefersReduced ? 450 : 900);
 
-      setTimeout(function () {
-        var current = document.getElementById(INTRO_ID);
-        if (current && current.parentNode) {
-          current.parentNode.removeChild(current);
-        }
-      }, FALLBACK_TIMEOUT);
     }
+
+    function showIntro(duration, onComplete) {
+      var el = document.getElementById(INTRO_ID);
+      if (!el || isTransitioning) return false;
+      isTransitioning = true;
+      el.classList.remove('ns-hidden');
+      el.classList.add('ns-active');
+      setTimeout(function () {
+        hideIntro();
+        if (typeof onComplete === 'function') setTimeout(onComplete, 260);
+        else setTimeout(function () { isTransitioning = false; }, 260);
+      }, duration || EXIT_DELAY);
+      return true;
+    }
+
+    window.neShieldShowTransition = showIntro;
+
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('a[href]');
+      if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target || link.hasAttribute('download')) return;
+      var destination = new URL(link.href, window.location.href);
+      if (destination.origin !== window.location.origin || (destination.pathname === window.location.pathname && destination.search === window.location.search && destination.hash)) return;
+      // Never trap a click while an existing transition is finishing. The
+      // browser can navigate normally, avoiding a stale dashboard marker.
+      if (isTransitioning) return;
+      event.preventDefault();
+      sessionStorage.setItem('neShieldNavigationPending', 'true');
+      if (!showIntro(700, function () { window.location.assign(destination.href); })) {
+        sessionStorage.removeItem('neShieldNavigationPending');
+        window.location.assign(destination.href);
+      }
+    });
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initIntro);

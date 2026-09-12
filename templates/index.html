@@ -1,1551 +1,645 @@
+{% set current_view = request.args.get('view', 'dashboard') %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NE-SHIELD | Landslide Risk Intelligence</title>
-
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        background: "#f8f9ff",
+                        "on-surface": "#0b1c30",
+                        "tertiary-fixed-dim": "#94ccff",
+                        "on-secondary-fixed": "#131a33",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-fixed-variant": "#004b74",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#004b73",
+                        "tertiary": "#006195",
+                        "surface": "#f8f9ff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-container": "#fdfcff",
+                        "on-primary-fixed": "#001d31",
+                        "outline-variant": "#bfc7d2",
+                        "surface-tint": "#006398",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "primary-fixed-dim": "#93ccff",
+                        "on-tertiary-fixed": "#001d32",
+                        "inverse-primary": "#93ccff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d8deff",
+                        "surface-variant": "#d3e4fe",
+                        "surface-dim": "#cbdbf5",
+                        "on-background": "#0b1c30",
+                        "tertiary-container": "#0d7ab9",
+                        "primary-fixed": "#cce5ff",
+                        "primary": "#006194",
+                        "surface-container-highest": "#d3e4fe",
+                        "inverse-surface": "#213145",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#3e4660",
+                        "primary-container": "#007bb9",
+                        "on-secondary-container": "#5a627e",
+                        "on-surface-variant": "#3f4850",
+                        "on-tertiary-container": "#fdfcff",
+                        "outline": "#707881",
+                        "secondary-fixed-dim": "#bec5e5",
+                        "secondary-fixed": "#dbe1ff",
+                        "secondary": "#565d79",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#cde5ff"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+                    },
+                    spacing: {
+                        "sidebar-width": "360px",
+                        gutter: "0.75rem",
+                        "unit-4": "1rem",
+                        "unit-3": "0.75rem",
+                        "toolbar-height": "48px",
+                        "header-height": "56px",
+                        "unit-1": "0.25rem",
+                        "unit-2": "0.5rem",
+                        "unit-8": "2rem",
+                        "unit-6": "1.5rem"
+                    },
+                    fontFamily: {
+                        "body-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    fontSize: {
+                        "body-md": ["13px", { lineHeight: "18px", fontWeight: "400" }],
+                        "headline-md": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+                        "body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+                        "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "600" }],
+                        "title-sm": ["16px", { lineHeight: "24px", letterSpacing: "-0.005em", fontWeight: "600" }],
+                        "label-sm": ["10px", { lineHeight: "14px", letterSpacing: "0.08em", fontWeight: "700" }],
+                        "body-lg": ["15px", { lineHeight: "22px", fontWeight: "400" }],
+                        "display-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.015em", fontWeight: "600" }]
+                    }
+                }
+            }
+        };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: #f1f5f9;
-            color: #1e293b;
-        }
-
-        header {
-            background: linear-gradient(135deg, #0f172a, #1e3a5f);
-            color: white;
-            padding: 18px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
-        }
-
-        .logo {
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .logo span {
-            color: #38bdf8;
-        }
-
-        .tagline {
-            font-size: 12px;
-            color: #cbd5e1;
-            margin-top: 3px;
-        }
-
-        .status {
-            background: #166534;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-
-        .container {
-            width: 94%;
-            max-width: 1450px;
-            margin: 30px auto;
-        }
-
-        .hero {
-            margin-bottom: 25px;
-        }
-
-        .hero h1 {
-            font-size: 31px;
-            color: #0f172a;
-        }
-
-        .hero p {
-            color: #64748b;
-            margin-top: 8px;
-            line-height: 1.6;
-        }
-
-        /* SUMMARY CARDS */
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 17px;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background: white;
-            padding: 21px;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
-        }
-
-        .card h3 {
-            font-size: 13px;
-            color: #64748b;
-            margin-bottom: 9px;
-        }
-
-        .number {
-            font-size: 29px;
-            font-weight: bold;
-        }
-
-        .total {
-            border-top: 4px solid #2563eb;
-        }
-
-        .low {
-            border-top: 4px solid #22c55e;
-        }
-
-        .moderate {
-            border-top: 4px solid #eab308;
-        }
-
-        .high {
-            border-top: 4px solid #f97316;
-        }
-
-        .very-high {
-            border-top: 4px solid #dc2626;
-        }
-
-        /* GENERAL SECTION */
-
-        .section {
-            background: white;
-            border-radius: 14px;
-            padding: 28px;
-            margin-bottom: 30px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
-        }
-
-        .section h2 {
-            color: #0f172a;
-            margin-bottom: 8px;
-        }
-
-        .section-description {
-            color: #64748b;
-            line-height: 1.6;
-            margin-bottom: 22px;
-        }
-
-        /* WORKFLOW */
-
-        .workflow {
-            display: flex;
-            align-items: stretch;
-            justify-content: space-between;
-            gap: 8px;
-            margin-top: 22px;
-        }
-
-        .workflow-step {
-            flex: 1;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 17px 10px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .workflow-number {
-            width: 31px;
-            height: 31px;
-            margin: 0 auto 9px;
-            border-radius: 50%;
-            background: #2563eb;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .workflow-step strong {
-            font-size: 13px;
-            display: block;
-            line-height: 1.4;
-        }
-
-        .workflow-arrow {
-            display: flex;
-            align-items: center;
-            color: #94a3b8;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        /* FORM */
-
-        .form-heading {
-            margin-top: 27px;
-            margin-bottom: 15px;
-            padding-bottom: 9px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 18px;
-            color: #0f172a;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .input-group label {
-            font-size: 14px;
-            font-weight: bold;
-            color: #334155;
-            margin-bottom: 7px;
-        }
-
-        .input-group input,
-        .input-group select {
-            padding: 11px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 7px;
-            font-size: 15px;
-            background: white;
-            outline: none;
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
-            border-color: #2563eb;
-        }
-
-        .location-note {
-            margin-top: 14px;
-            background: #eff6ff;
-            color: #1e40af;
-            border-left: 5px solid #2563eb;
-            padding: 14px;
-            border-radius: 7px;
-            line-height: 1.6;
-        }
-
-        .analyze-btn {
-            margin-top: 25px;
-            background: #2563eb;
-            color: white;
-            padding: 14px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .analyze-btn:hover {
-            background: #1d4ed8;
-        }
-
-        .error-box {
-            margin-top: 25px;
-            background: #fee2e2;
-            color: #991b1b;
-            border-left: 5px solid #dc2626;
-            padding: 16px;
-            border-radius: 8px;
-        }
-
-        /* RESULTS */
-
-        .result-container {
-            margin-top: 30px;
-        }
-
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 17px;
-        }
-
-        .result-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 19px;
-            border-radius: 10px;
-        }
-
-        .result-card h4 {
-            font-size: 12px;
-            text-transform: uppercase;
-            color: #64748b;
-            margin-bottom: 8px;
-        }
-
-        .result-value {
-            font-size: 23px;
-            font-weight: bold;
-        }
-
-        .risk-Low {
-            color: #16a34a;
-        }
-
-        .risk-Moderate {
-            color: #ca8a04;
-        }
-
-        .risk-High {
-            color: #ea580c;
-        }
-
-        .risk-Very-High {
-            color: #dc2626;
-        }
-
-        /* ENVIRONMENT */
-
-        .auto-data-box {
-            margin-top: 24px;
-            padding: 22px;
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px;
-        }
-
-        .auto-data-box h3 {
-            color: #0f172a;
-            margin-bottom: 7px;
-        }
-
-        .auto-data-box > p {
-            color: #64748b;
-            margin-bottom: 18px;
-            line-height: 1.5;
-        }
-
-        .environment-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-        }
-
-        .environment-card {
-            background: white;
-            padding: 16px;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .environment-card strong {
-            display: block;
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 6px;
-        }
-
-        .environment-card span {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .source {
-            display: block;
-            font-size: 11px;
-            font-weight: normal;
-            color: #94a3b8;
-            margin-top: 6px;
-        }
-
-        .reference-box {
-            background: #eff6ff;
-            color: #1e40af;
-            padding: 14px;
-            border-radius: 8px;
-            margin-top: 17px;
-            line-height: 1.7;
-        }
-
-        /* WARNING */
-
-        .warning-box {
-            margin-top: 22px;
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-        }
-
-        .warning-Low {
-            background: #dcfce7;
-            border: 2px solid #22c55e;
-            color: #166534;
-        }
-
-        .warning-Moderate {
-            background: #fef9c3;
-            border: 2px solid #eab308;
-            color: #854d0e;
-        }
-
-        .warning-High {
-            background: #ffedd5;
-            border: 2px solid #f97316;
-            color: #9a3412;
-        }
-
-        .warning-Very-High {
-            background: #fee2e2;
-            border: 2px solid #dc2626;
-            color: #991b1b;
-        }
-
-        .warning-box h3 {
-            font-size: 15px;
-            margin-bottom: 9px;
-        }
-
-        .warning-value {
-            font-size: 33px;
-            font-weight: bold;
-        }
-
-        /* IMPACT */
-
-        .impact-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin-top: 20px;
-        }
-
-        .impact-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 16px;
-            border-radius: 9px;
-        }
-
-        .impact-card strong {
-            display: block;
-            color: #64748b;
-            font-size: 12px;
-            margin-bottom: 7px;
-        }
-
-        /* PRIORITY */
-
-        .priority-box {
-            margin-top: 24px;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .priority-LOW {
-            background: #dcfce7;
-            border: 2px solid #22c55e;
-            color: #166534;
-        }
-
-        .priority-MEDIUM {
-            background: #fef9c3;
-            border: 2px solid #eab308;
-            color: #854d0e;
-        }
-
-        .priority-HIGH {
-            background: #ffedd5;
-            border: 2px solid #f97316;
-            color: #9a3412;
-        }
-
-        .priority-CRITICAL {
-            background: #fee2e2;
-            border: 3px solid #dc2626;
-            color: #991b1b;
-        }
-
-        .priority-value {
-            font-size: 35px;
-            font-weight: bold;
-            margin: 8px 0;
-        }
-
-        .priority-score {
-            margin-bottom: 13px;
-        }
-
-        .recommended-action {
-            max-width: 900px;
-            margin: auto;
-            line-height: 1.6;
-        }
-
-        /* MAP */
-
-        .map-frame {
-            width: 100%;
-            height: 620px;
-            border: none;
-            border-radius: 10px;
-        }
-
-        .map-selected-note {
-            margin-bottom: 15px;
-            background: #eff6ff;
-            color: #1e40af;
-            border-left: 5px solid #2563eb;
-            padding: 14px;
-            border-radius: 7px;
-            line-height: 1.6;
-        }
-
-        /* DATA SOURCES */
-
-        .source-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-        }
-
-        .source-card {
-            padding: 18px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 9px;
-        }
-
-        .source-card h4 {
-            color: #0f172a;
-            margin-bottom: 8px;
-        }
-
-        .source-card p {
-            color: #64748b;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        /* NOTES */
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
-        }
-
-        .info-box {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
-        }
-
-        .info-box h3 {
-            margin-bottom: 14px;
-        }
-
-        .info-box p {
-            color: #64748b;
-            line-height: 1.7;
-            margin-bottom: 9px;
-        }
-
-        .prototype-note {
-            background: #fff7ed;
-            color: #9a3412;
-            border-left: 5px solid #f97316;
-            padding: 16px;
-            border-radius: 7px;
-            margin-top: 15px;
-            line-height: 1.6;
-        }
-
-        footer {
-            margin-top: 40px;
-            background: #0f172a;
-            color: #cbd5e1;
-            text-align: center;
-            padding: 22px;
-        }
-
-        @media(max-width:1100px) {
-            .cards {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .form-grid,
-            .result-grid,
-            .environment-grid,
-            .impact-grid,
-            .source-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .workflow {
-                flex-wrap: wrap;
-            }
-
-            .workflow-arrow {
-                display: none;
-            }
-
-            .workflow-step {
-                min-width: 28%;
-            }
-        }
-
-        @media(max-width:700px) {
-            header {
-                padding: 15px 20px;
-            }
-
-            .container {
-                width: 95%;
-            }
-
-            .cards,
-            .form-grid,
-            .result-grid,
-            .environment-grid,
-            .impact-grid,
-            .source-grid,
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .workflow {
-                display: grid;
-                grid-template-columns: 1fr;
-            }
-        }
-
+        /* NE-SHIELD Professional GIS Light Background */
+        body, html, #root, .app-container, .page-container {
+            background-color: #f8fafc;
+            background-image: url('/static/ne-shield-light-bg.png');
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .ne-content-background {
+            background-color: #071323;
+            background-image: radial-gradient(circle at 12% 8%, rgba(14, 116, 144, .23), transparent 30rem), radial-gradient(circle at 90% 25%, rgba(30, 64, 175, .18), transparent 28rem), linear-gradient(rgba(125, 211, 252, .045) 1px, transparent 1px), linear-gradient(90deg, rgba(125, 211, 252, .045) 1px, transparent 1px);
+            background-size: auto, auto, 42px 42px, 42px 42px;
+        }
+        .ne-content-background .ne-page-card { box-shadow: 0 18px 46px rgba(0, 0, 0, .22); }
+        .regional-risk-card { min-height: 520px; position: relative; overflow: hidden; border: 1px solid #334155; border-radius: .75rem; background-color: #0b1f38; box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
+        .regional-risk-card::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(5,15,28,.4), transparent 45%); }
+        .regional-risk-card .regional-map-label { position:absolute; z-index:1; left:1.25rem; top:1.25rem; border:1px solid rgba(125,211,252,.3); border-radius:.5rem; padding:.65rem .8rem; background:rgba(3,12,24,.8); color:#e0f2fe; box-shadow:0 6px 18px rgba(0,0,0,.28); }
+        .regional-risk-card .regional-map-label strong { display:block; font-size:.82rem; letter-spacing:.03em; }
+        .regional-risk-card .regional-map-label span { display:block; margin-top:.22rem; color:#93c5fd; font-size:.7rem; }
+        .regional-risk-stats { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:.75rem; margin-top:.9rem; }
+        .regional-risk-stat { border:1px solid #d7e0ec; border-radius:.7rem; padding:.8rem .9rem; background:rgba(255,255,255,.88); }
+        .regional-risk-stat .label { display:flex; align-items:center; gap:.4rem; color:#536275; font-size:.72rem; font-weight:600; }
+        .regional-risk-stat .value { margin-top:.3rem; color:#10243d; font-size:1.35rem; font-weight:700; line-height:1; }
+        .regional-risk-stat .detail { margin-top:.3rem; color:#718096; font-size:.66rem; text-transform:uppercase; letter-spacing:.06em; }
+        .risk-dot { display:inline-block; width:.5rem; height:.5rem; border-radius:999px; } .risk-dot.low { background:#059669; } .risk-dot.moderate { background:#d97706; } .risk-dot.high { background:#ea580c; } .risk-dot.very-high { background:#dc2626; }
+        @media (max-width: 800px) { .regional-risk-card { min-height:360px; } .regional-risk-stats { grid-template-columns:repeat(2, minmax(0, 1fr)); } }
     </style>
 </head>
+<body class="bg-surface font-body-md text-on-surface" data-ne-shield-intro="{{ 'startup' if current_view == 'dashboard' and not prediction else '' }}">
+    {% include '_ne_shield_startup.html' %}
+    <header class="fixed top-0 left-0 right-0 h-[56px] bg-[#0B132B] text-white z-50 flex items-center justify-between px-6 shadow-[0_1px_8px_rgba(0,0,0,0.08)]">
+        <div class="flex items-center gap-4">
+            <a href="/" class="flex items-center gap-2 rounded-md transition-opacity hover:opacity-85" aria-label="Go to Dashboard">
+                <span class="material-symbols-outlined text-[24px] text-primary-fixed-dim">shield</span>
+                <span class="text-[24px] font-semibold tracking-tight">NE-SHIELD</span>
+            </a>
+            <div class="h-4 w-[1px] bg-white/20"></div>
+        </div>
+        <nav class="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 shadow-sm md:flex">
+            <a href="/" class="{% if current_view == 'dashboard' and not prediction %}bg-primary font-semibold text-on-primary shadow-sm{% else %}text-slate-300 hover:bg-white/10 hover:text-white{% endif %} rounded-full px-3 py-1.5 text-body-sm transition-colors">Dashboard</a>
+            <a href="/?view=analyze" class="{% if current_view == 'analyze' %}bg-primary font-semibold text-on-primary shadow-sm{% else %}text-slate-300 hover:bg-white/10 hover:text-white{% endif %} rounded-full px-3 py-1.5 text-body-sm transition-colors">Analyze</a>
+            <a href="/map" class="rounded-full px-3 py-1.5 text-body-sm text-slate-300 transition-colors hover:bg-white/10 hover:text-white">Risk Map</a>
+            <a href="/?view=method" class="{% if current_view == 'method' %}bg-primary font-semibold text-on-primary shadow-sm{% else %}text-slate-300 hover:bg-white/10 hover:text-white{% endif %} rounded-full px-3 py-1.5 text-body-sm transition-colors">About</a>
+        </nav>
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined cursor-pointer text-slate-300 hover:text-white">notifications</span>
+            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
+                <span class="material-symbols-outlined text-[18px] text-on-primary">person</span>
+            </div>
+        </div>
+    </header>
 
+    <main class="relative min-h-screen bg-transparent pt-[56px]">
+        <div class="flex w-full flex-col">
+            <div id="dashboard-intro" class="{% if current_view != 'dashboard' or prediction %}hidden {% endif %}flex flex-col justify-between gap-4 border-b border-outline-variant/30 bg-white px-8 py-6 md:flex-row md:items-center">
+                <div class="max-w-4xl">
+                    <div class="flex items-center gap-2">
+                        <span class="text-label-sm uppercase tracking-[0.1em] text-primary">North East India</span>
+                    </div>
+                    <h1 class="mt-2 text-display-lg font-headline-lg tracking-tight text-on-surface">Landslide Risk Assessment Dashboard</h1>
+                    <p class="mt-1 text-body-lg text-on-surface-variant">Susceptibility assessment, rainfall-trigger evaluation, impact assessment and emergency prioritization.</p>
+                </div>
+            </div>
 
-<body>
+            <div class="mx-auto flex w-full max-w-[1600px] flex-col gap-8 p-8">
+                <div class="{% if current_view != 'dashboard' or prediction %}hidden {% endif %}grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                    <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-5 shadow-sm transition-all hover:shadow-md">
+                        <div class="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-primary/5"></div>
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-label-sm uppercase text-on-surface-variant">Total analyzed</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary"><span class="material-symbols-outlined text-[18px]">analytics</span></span>
+                        </div>
+                        <div class="text-display-lg font-headline-lg tracking-tight text-on-surface">{{ total }}</div>
+                        <div class="text-body-sm text-on-surface-variant">Locations assessed</div>
+                    </div>
 
+                    <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-5 shadow-sm transition-all hover:shadow-md">
+                        <div class="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-emerald-500/5"></div>
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-label-sm font-bold uppercase text-emerald-700">Low susceptibility</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600"><span class="material-symbols-outlined text-[18px]">check_circle</span></span>
+                        </div>
+                        <div class="text-display-lg font-headline-lg tracking-tight text-emerald-700">{{ low }}</div>
+                        <div class="text-body-sm text-on-surface-variant">Low risk classification</div>
+                    </div>
+
+                    <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-5 shadow-sm transition-all hover:shadow-md">
+                        <div class="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-amber-500/5"></div>
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-label-sm font-bold uppercase text-amber-700">Moderate susceptibility</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600"><span class="material-symbols-outlined text-[18px]">warning</span></span>
+                        </div>
+                        <div class="text-display-lg font-headline-lg tracking-tight text-amber-700">{{ moderate }}</div>
+                        <div class="text-body-sm text-on-surface-variant">Monitoring required</div>
+                    </div>
+
+                    <div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-5 shadow-sm transition-all hover:shadow-md">
+                        <div class="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-orange-500/5"></div>
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-label-sm font-bold uppercase text-orange-700">High susceptibility</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-50 text-orange-600"><span class="material-symbols-outlined text-[18px]">emergency</span></span>
+                        </div>
+                        <div class="text-display-lg font-headline-lg tracking-tight text-orange-700">{{ high }}</div>
+                        <div class="text-body-sm text-on-surface-variant">Elevated hazard state</div>
+                    </div>
+
+                    <div class="relative overflow-hidden rounded-xl border-l-4 border-error bg-surface-container-lowest p-5 shadow-sm transition-all hover:shadow-md">
+                        <div class="pointer-events-none absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-error/5"></div>
+                        <div class="mb-3 flex items-center justify-between">
+                            <span class="text-label-sm font-bold uppercase text-error">Very high susceptibility</span>
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-error"><span class="material-symbols-outlined text-[18px]">dangerous</span></span>
+                        </div>
+                        <div class="text-display-lg font-headline-lg tracking-tight text-error">{{ very_high }}</div>
+                        <div class="text-body-sm text-on-surface-variant">Priority risk tier</div>
+                    </div>
+                </div>
+
+                <section id="workflow" class="{% if current_view != 'dashboard' or prediction %}hidden {% endif %}grid grid-cols-1 gap-6 lg:grid-cols-3">
+                    <div class="relative min-h-[330px] overflow-hidden rounded-2xl bg-[#0b1f38] p-9 text-white shadow-sm lg:col-span-2">
+                        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(8,145,178,.30),#070d1a_62%,#040812)]"></div>
+                        <div class="pointer-events-none absolute inset-0 overflow-hidden opacity-15">
+                            <svg class="h-full w-full" preserveAspectRatio="none" viewBox="0 0 1200 400" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="terrain-fill-main" x1="0%" x2="0%" y1="0%" y2="100%"><stop offset="0%" stop-color="#0284c7" stop-opacity=".5"/><stop offset="100%" stop-color="#070d1a" stop-opacity="0"/></linearGradient>
+                                    <linearGradient id="terrain-fill-back" x1="0%" x2="0%" y1="0%" y2="100%"><stop offset="0%" stop-color="#0369a1" stop-opacity=".42"/><stop offset="100%" stop-color="#070d1a" stop-opacity="0"/></linearGradient>
+                                </defs>
+                                <path d="M0,300 Q300,150 600,250 T1200,200 L1200,400 L0,400 Z" fill="url(#terrain-fill-main)" opacity=".7"/>
+                                <path d="M0,350 Q250,200 550,280 T1200,220 L1200,400 L0,400 Z" fill="url(#terrain-fill-back)" opacity=".55"/>
+                                <path d="M-100,280 Q200,120 500,220 T1100,180 T1300,150" fill="none" stroke="#38bdf8" stroke-width="2"/>
+                                <path d="M-100,330 Q250,180 550,250 T1150,210 T1300,190" fill="none" stroke="#0ea5e9" stroke-width="1.5" opacity=".7"/>
+                                <path d="M0,365 Q150,255 350,320 T700,280 T1200,305" fill="none" stroke="#155e75" stroke-width="1" opacity=".8"/>
+                            </svg>
+                        </div>
+                        <div class="relative max-w-2xl">
+                            <div class="text-label-sm uppercase tracking-[0.12em] text-sky-200">Risk assessment</div>
+                            <h2 class="mt-5 text-[34px] font-semibold leading-tight tracking-tight">Assess vulnerable slopes across North East India.</h2>
+                            <p class="mt-5 max-w-xl text-body-lg leading-6 text-slate-200">Submit location, recent rainfall and local impact conditions to calculate susceptibility, early warning and emergency priority.</p>
+                            <div class="mt-8 flex flex-wrap gap-3">
+                                <a href="/?view=analyze" class="flex items-center gap-2 rounded-lg bg-[#93ccff] px-5 py-3 text-body-md font-semibold text-[#00233a] shadow-sm hover:bg-[#b8ddff]"><span class="material-symbols-outlined text-[19px]">assessment</span>Start Risk Assessment</a>
+                                <a href="/map" class="flex items-center gap-2 rounded-lg border border-white/25 bg-white/10 px-5 py-3 text-body-md font-semibold text-white hover:bg-white/15"><span class="material-symbols-outlined text-[19px]">map</span>View Risk Map</a>
+                            </div>
+                        </div>
+                    </div>
+                    <aside class="rounded-2xl bg-surface-container-lowest p-6 shadow-sm">
+                        <div class="flex items-center justify-between"><h2 class="text-headline-md font-headline-md text-on-surface">Assessment guidance</h2></div>
+                        <div class="mt-5 space-y-3">
+                            <div class="rounded-lg bg-surface-container-low p-4"><div class="flex gap-3"><span class="material-symbols-outlined text-primary">location_on</span><div><div class="font-semibold text-on-surface">Location details</div><p class="mt-1 text-body-sm text-on-surface-variant">Coordinates are checked against the North East India study area.</p></div></div></div>
+                            <div class="rounded-lg bg-surface-container-low p-4"><div class="flex gap-3"><span class="material-symbols-outlined text-primary">water_drop</span><div><div class="font-semibold text-on-surface">Environmental data</div><p class="mt-1 text-body-sm text-on-surface-variant">Rainfall and exposure inputs inform warning and priority calculations.</p></div></div></div>
+                        </div>
+                    </aside>
+                </section>
+
+                {% if current_view == 'analyze' and (not prediction or prediction.error) %}
+                <section id="analysis-page" class="ne-page-card mx-auto w-full max-w-5xl rounded-2xl bg-surface-container-lowest p-6 shadow-sm md:p-8">
+                    <div class="mb-6 flex items-start justify-between gap-4">
+                        <div>
+                            <div class="text-label-sm uppercase tracking-[0.08em] text-primary">Location analysis</div>
+                            <h1 class="mt-1 text-headline-lg font-headline-lg text-on-surface">Analyze a location</h1>
+                            <p class="mt-1 text-body-md text-on-surface-variant">Enter the same operational inputs used by the NE-SHIELD analysis engine.</p>
+                        </div>
+                        <a href="/" class="rounded-lg border border-outline-variant bg-surface px-4 py-2 text-body-md font-semibold text-on-surface hover:bg-surface-container">Dashboard</a>
+                    </div>
+
+                    {% if prediction and prediction.error %}
+                    <div class="mb-5 rounded-xl border border-red-200 bg-red-50 p-4 text-body-md text-red-700"><strong>Analysis error:</strong> {{ prediction.error }}</div>
+                    {% endif %}
+
+                    <form id="analysis-page-form" method="POST" action="/?view=analyze" class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">Latitude
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" type="number" step="any" name="latitude" value="{{ request.form.get('latitude', request.args.get('lat', '')) }}" required>
+                        </label>
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">Longitude
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" type="number" step="any" name="longitude" value="{{ request.form.get('longitude', request.args.get('lon', '')) }}" required>
+                        </label>
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">Recent rainfall (24h, mm)
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" type="number" min="0" step="any" name="rain_24h" value="{{ request.form.get('rain_24h', '0') }}" required>
+                        </label>
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">Recent rainfall (72h, mm)
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" type="number" min="0" step="any" name="rain_72h" value="{{ request.form.get('rain_72h', '0') }}" required>
+                        </label>
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">Road / transport route affected
+                            <select class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" name="road_affected"><option value="no" {% if request.form.get('road_affected') == 'no' %}selected{% endif %}>No</option><option value="yes" {% if request.form.get('road_affected') == 'yes' %}selected{% endif %}>Yes</option></select>
+                        </label>
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">Village / settlement nearby
+                            <select class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" name="village_nearby"><option value="no" {% if request.form.get('village_nearby') == 'no' %}selected{% endif %}>No</option><option value="yes" {% if request.form.get('village_nearby') == 'yes' %}selected{% endif %}>Yes</option></select>
+                        </label>
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">Critical facility nearby
+                            <select class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" name="critical_facility"><option value="no" {% if request.form.get('critical_facility') == 'no' %}selected{% endif %}>No</option><option value="yes" {% if request.form.get('critical_facility') == 'yes' %}selected{% endif %}>Yes</option></select>
+                        </label>
+                        <label class="flex flex-col gap-1.5 text-body-md font-semibold text-on-surface">People exposed
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md font-normal focus:border-primary focus:outline-none" type="number" min="0" name="people_exposed" value="{{ request.form.get('people_exposed', '0') }}" required>
+                        </label>
+                        <div class="md:col-span-2 flex items-center justify-end gap-3 pt-2">
+                            <a href="/" class="rounded-lg bg-surface-container px-4 py-2 text-body-md font-semibold text-on-surface hover:bg-surface-container-high">Cancel</a>
+                            <button type="submit" class="flex items-center gap-2 rounded-lg bg-primary px-5 py-3 text-body-md font-semibold text-on-primary shadow-md hover:bg-primary/90"><span class="material-symbols-outlined text-[18px]">radar</span>Analyze Location &amp; Generate Warning</button>
+                        </div>
+                    </form>
+                    <div id="analysis-page-processing" class="hidden items-center justify-center gap-3 py-12 text-on-surface-variant"><span class="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></span><span>Running the NE-SHIELD analysis…</span></div>
+                </section>
+                {% endif %}
+
+                {% if prediction and prediction.error and current_view != 'analyze' %}
+                <div class="rounded-xl border border-red-200 bg-red-50 p-4 text-body-md text-red-700">
+                    <strong>Analysis error:</strong> {{ prediction.error }}
+                </div>
+                {% endif %}
+
+                {% if prediction and not prediction.error %}
+                <section id="analysis-result-screen" class="rounded-2xl bg-surface-container-lowest p-6 shadow-sm">
+                    <div class="mb-5 flex items-center justify-between gap-3">
+                        <div>
+                            <div class="text-label-sm uppercase tracking-[0.08em] text-primary">Analysis Result</div>
+                            <h3 class="mt-1 text-headline-lg font-headline-lg text-on-surface">Current NE-SHIELD assessment</h3>
+                        </div>
+                        <a href="/map?lat={{ prediction.latitude }}&lon={{ prediction.longitude }}&risk={{ prediction.risk | urlencode }}&priority={{ prediction.priority | urlencode }}&warning={{ prediction.warning | urlencode }}" class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-body-md font-semibold text-on-primary">
+                            <span class="material-symbols-outlined text-[18px]">map</span>
+                            View on Map
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <div class="rounded-xl bg-surface-container-low p-4">
+                            <div class="text-label-sm uppercase text-on-surface-variant">Selected location</div>
+                            <div class="mt-2 text-title-sm font-semibold text-on-surface">{{ prediction.latitude }}, {{ prediction.longitude }}</div>
+                        </div>
+                        <div class="rounded-xl bg-surface-container-low p-4">
+                            <div class="text-label-sm uppercase text-on-surface-variant">Reference point</div>
+                            <div class="mt-2 text-title-sm font-semibold text-on-surface">{{ prediction.nearest_latitude }}, {{ prediction.nearest_longitude }}</div>
+                        </div>
+                        <div class="rounded-xl bg-surface-container-low p-4">
+                            <div class="text-label-sm uppercase text-on-surface-variant">Reference distance</div>
+                            <div class="mt-2 text-title-sm font-semibold text-on-surface">{{ prediction.nearest_distance }} km</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                        <div class="rounded-xl bg-surface-container-low p-5">
+                            <div class="text-label-sm uppercase text-on-surface-variant">Environmental values</div>
+                            <div class="mt-4 space-y-3 text-body-md">
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Annual rainfall</span><span class="font-semibold text-on-surface">{{ prediction.rainfall }} mm/year</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Elevation</span><span class="font-semibold text-on-surface">{{ prediction.elevation }} m</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Slope</span><span class="font-semibold text-on-surface">{{ prediction.slope }}°</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Clay</span><span class="font-semibold text-on-surface">{{ prediction.clay }} g/kg</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Sand</span><span class="font-semibold text-on-surface">{{ prediction.sand }} g/kg</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Silt</span><span class="font-semibold text-on-surface">{{ prediction.silt }} g/kg</span></div>
+                            </div>
+                        </div>
+
+                        <div class="rounded-xl bg-surface-container-low p-5">
+                            <div class="text-label-sm uppercase text-on-surface-variant">Susceptibility and rainfall trigger</div>
+                            <div class="mt-4 space-y-3 text-body-md">
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Susceptibility class</span><span class="rounded bg-primary/10 px-2 py-1 text-label-sm font-bold text-primary">{{ prediction.risk }}</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Susceptibility score</span><span class="font-semibold text-on-surface">{{ prediction.score }}%</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Rainfall trigger</span><span class="font-semibold text-on-surface">{{ prediction.rainfall_trigger }}</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Recent 24h rainfall</span><span class="font-semibold text-on-surface">{{ prediction.rain_24h }} mm</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Recent 72h rainfall</span><span class="font-semibold text-on-surface">{{ prediction.rain_72h }} mm</span></div>
+                                <div class="flex items-center justify-between gap-4"><span class="text-on-surface-variant">Early warning</span><span class="font-semibold text-on-surface">{{ prediction.warning }}</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 rounded-xl border border-outline-variant/40 bg-surface-container p-5">
+                        <div class="text-label-sm uppercase text-primary">Impact assessment</div>
+                        <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
+                            <div class="rounded-lg bg-surface p-3">
+                                <div class="text-body-sm text-on-surface-variant">Road / transport route affected</div>
+                                <div class="mt-2 text-title-sm font-semibold text-on-surface">{% if prediction.road_affected == 'yes' %}Yes{% else %}No{% endif %}</div>
+                            </div>
+                            <div class="rounded-lg bg-surface p-3">
+                                <div class="text-body-sm text-on-surface-variant">Village / settlement nearby</div>
+                                <div class="mt-2 text-title-sm font-semibold text-on-surface">{% if prediction.village_nearby == 'yes' %}Yes{% else %}No{% endif %}</div>
+                            </div>
+                            <div class="rounded-lg bg-surface p-3">
+                                <div class="text-body-sm text-on-surface-variant">Critical facility nearby</div>
+                                <div class="mt-2 text-title-sm font-semibold text-on-surface">{% if prediction.critical_facility == 'yes' %}Yes{% else %}No{% endif %}</div>
+                            </div>
+                            <div class="rounded-lg bg-surface p-3">
+                                <div class="text-body-sm text-on-surface-variant">People exposed</div>
+                                <div class="mt-2 text-title-sm font-semibold text-on-surface">{{ prediction.people_exposed }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-5">
+                        <div class="text-label-sm uppercase tracking-[0.08em] text-error">Emergency priority</div>
+                        <div class="mt-2 text-display-lg font-headline-lg text-error">{{ prediction.priority }}</div>
+                        <div class="mt-1 text-body-md text-on-surface-variant">Decision priority score: <strong class="text-on-surface">{{ prediction.priority_score }}</strong></div>
+                        <div class="mt-4 rounded-lg bg-white/60 p-3 text-body-md text-on-surface">
+                            <div class="text-label-sm uppercase text-on-surface-variant">Recommended action</div>
+                            <p class="mt-2">{{ prediction.recommended_action }}</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end">
+                        <a href="/?view=analyze" onclick="if (window.history.length > 1) { window.history.back(); return false; }" class="flex items-center gap-2 rounded-lg border border-outline-variant bg-surface px-4 py-2 text-body-md font-semibold text-on-surface hover:bg-surface-container"><span class="material-symbols-outlined text-[18px]">arrow_back</span>Back to Analysis</a>
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if current_view == 'method' %}
+                <section id="method-page" class="-mx-8 -mt-8 overflow-hidden bg-transparent">
+                    <div class="bg-[#0b1530] px-8 py-12 text-white md:px-12">
+                        <div class="mx-auto max-w-[1400px]">
+                            <div class="inline-flex items-center gap-2 rounded border border-sky-300/30 bg-sky-300/10 px-2.5 py-1 text-label-sm uppercase tracking-[0.09em] text-sky-200"><span class="material-symbols-outlined text-[14px]">memory</span>System architecture &amp; methodology</div>
+                            <h1 class="mt-6 text-[28px] font-semibold tracking-tight">NE-SHIELD Assessment Methodology</h1>
+                            <p class="mt-3 max-w-3xl text-body-lg leading-6 text-slate-200">Landslide susceptibility assessment, rainfall-trigger evaluation, impact assessment and emergency prioritization for North East India.</p>
+                            <div class="mt-8 grid grid-cols-2 gap-5 border-t border-white/10 pt-6 text-body-sm md:grid-cols-4">
+                                <div><div class="text-label-sm uppercase text-slate-400">Model engine</div><div class="mt-1 font-semibold text-white">Random Forest classifier</div></div>
+                                <div><div class="text-label-sm uppercase text-slate-400">Reference lookup</div><div class="mt-1 font-semibold text-white">Nearest available point</div></div>
+                                <div><div class="text-label-sm uppercase text-slate-400">Input coverage</div><div class="mt-1 font-semibold text-white">Terrain, soil &amp; rainfall</div></div>
+                                <div><div class="text-label-sm uppercase text-slate-400">Study area</div><div class="mt-1 font-semibold text-white">North East India</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mx-auto max-w-[1400px] px-8 py-12 md:px-12">
+                        <div class="grid gap-6 md:grid-cols-[1fr_1fr] md:items-end">
+                            <div><div class="text-label-sm uppercase tracking-[0.08em] text-primary">Assessment workflow</div><h2 class="mt-2 text-headline-lg font-headline-lg text-on-surface">How the assessment process works</h2></div>
+                            <p class="text-body-md leading-5 text-on-surface-variant">A seven-stage analysis path transforms submitted location, rainfall and impact inputs into the existing susceptibility, warning and emergency-priority result.</p>
+                        </div>
+                        <div class="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                            <article class="rounded-xl border border-outline-variant/30 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><span class="material-symbols-outlined rounded bg-primary/10 p-2 text-primary">my_location</span><span class="text-label-sm text-on-surface-variant">01</span></div><h3 class="mt-5 text-title-sm font-semibold">Location &amp; spatial indexing</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Coordinates are validated for the prototype area and used to identify the nearest reference location.</p><div class="mt-5 border-t border-outline-variant/20 pt-3 text-label-sm text-primary">Input validation <span aria-hidden="true">→</span></div></article>
+                            <article class="rounded-xl border border-outline-variant/30 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><span class="material-symbols-outlined rounded bg-primary/10 p-2 text-primary">layers</span><span class="text-label-sm text-on-surface-variant">02</span></div><h3 class="mt-5 text-title-sm font-semibold">Environmental reference data</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Rainfall, elevation, slope, clay, sand and silt values are retrieved from the nearest available reference point.</p><div class="mt-5 border-t border-outline-variant/20 pt-3 text-label-sm text-primary">Feature extraction <span aria-hidden="true">→</span></div></article>
+                            <article class="rounded-xl border border-outline-variant/30 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><span class="material-symbols-outlined rounded bg-primary/10 p-2 text-primary">neurology</span><span class="text-label-sm text-on-surface-variant">03</span></div><h3 class="mt-5 text-title-sm font-semibold">ML susceptibility</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">The trained Random Forest classifier calculates the susceptibility score and risk class from environmental features.</p><div class="mt-5 border-t border-outline-variant/20 pt-3 text-label-sm text-primary">Baseline score <span aria-hidden="true">→</span></div></article>
+                            <article class="rounded-xl border border-outline-variant/30 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><span class="material-symbols-outlined rounded bg-primary/10 p-2 text-primary">water_drop</span><span class="text-label-sm text-on-surface-variant">04</span></div><h3 class="mt-5 text-title-sm font-semibold">Rainfall trigger</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Submitted 24-hour and 72-hour rainfall totals are evaluated through the existing trigger thresholds.</p><div class="mt-5 border-t border-outline-variant/20 pt-3 text-label-sm text-primary">Precipitation index <span aria-hidden="true">→</span></div></article>
+                            <article class="rounded-xl border border-outline-variant/30 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><span class="material-symbols-outlined rounded bg-orange-500/10 p-2 text-orange-600">warning</span><span class="text-label-sm text-on-surface-variant">05</span></div><h3 class="mt-5 text-title-sm font-semibold">Early warning</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Susceptibility and rainfall-trigger classes are combined to calculate the system’s early-warning level.</p><div class="mt-5 border-t border-outline-variant/20 pt-3 text-label-sm text-orange-600">Warning calculation <span aria-hidden="true">→</span></div></article>
+                            <article class="rounded-xl border border-outline-variant/30 bg-white p-5 shadow-sm"><div class="flex items-center justify-between"><span class="material-symbols-outlined rounded bg-primary/10 p-2 text-primary">domain</span><span class="text-label-sm text-on-surface-variant">06</span></div><h3 class="mt-5 text-title-sm font-semibold">Impact analysis</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Roads, settlements, critical facilities and people exposed are assessed using the submitted impact inputs.</p><div class="mt-5 border-t border-outline-variant/20 pt-3 text-label-sm text-primary">Impact matrix <span aria-hidden="true">→</span></div></article>
+                            <article class="rounded-xl border-l-4 border-primary bg-white p-5 shadow-sm sm:col-span-2 xl:col-span-2"><div class="flex items-center justify-between"><span class="material-symbols-outlined rounded bg-emerald-500/10 p-2 text-emerald-700">emergency</span><span class="text-label-sm uppercase text-emerald-700">Final action tier</span></div><h3 class="mt-5 text-title-sm font-semibold">Emergency priority &amp; recommended action</h3><p class="mt-2 max-w-2xl text-body-sm leading-5 text-on-surface-variant">The existing transparent priority rules combine the warning and submitted impact conditions to return a priority tier, priority score and recommended response action.</p><div class="mt-5 border-t border-outline-variant/20 pt-3 text-label-sm text-emerald-700">Ready for decision support <span aria-hidden="true">→</span></div></article>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#edf3ff] px-8 py-12 md:px-12"><div class="mx-auto max-w-[1400px]"><div class="text-label-sm uppercase tracking-[0.08em] text-primary">Reference-data foundation</div><h2 class="mt-2 text-headline-lg font-headline-lg">Data &amp; intelligence sources</h2><p class="mt-2 max-w-3xl text-body-md text-on-surface-variant">The prototype draws on the environmental and landslide-inventory sources used to construct the reference dataset and train the current model.</p><div class="mt-7 grid grid-cols-1 gap-4 md:grid-cols-2"><article class="rounded-xl border border-outline-variant/30 bg-white p-5"><h3 class="text-title-sm font-semibold">Rainfall reference</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">NASA IMERG rainfall climatology provides the rainfall reference information used in the prototype dataset.</p><div class="mt-4 text-label-sm text-primary">Source: NASA IMERG Final V07B</div></article><article class="rounded-xl border border-outline-variant/30 bg-white p-5"><h3 class="text-title-sm font-semibold">Terrain &amp; elevation</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Elevation and terrain-slope values support susceptibility modelling for the study area.</p><div class="mt-4 text-label-sm text-primary">Source: NASA SRTMGL1 V003</div></article><article class="rounded-xl border border-outline-variant/30 bg-white p-5"><h3 class="text-title-sm font-semibold">Soil composition</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Clay, sand and silt attributes are used as environmental model features.</p><div class="mt-4 text-label-sm text-primary">Source: ISRIC SoilGrids</div></article><article class="rounded-xl border border-outline-variant/30 bg-white p-5"><h3 class="text-title-sm font-semibold">Landslide inventory</h3><p class="mt-2 text-body-sm leading-5 text-on-surface-variant">Historical inventory information supports construction and evaluation of the prototype training dataset.</p><div class="mt-4 text-label-sm text-primary">Source: Geological Survey of India</div></article></div></div></div>
+
+                    <div class="mx-auto max-w-[1400px] px-8 py-12 md:px-12"><div class="rounded-2xl bg-[#0b1530] p-8 text-white shadow-lg md:p-10"><div class="max-w-4xl"><div class="text-label-sm uppercase tracking-[0.08em] text-sky-200">Operational mandate &amp; prototype scope</div><h2 class="mt-3 text-headline-lg font-headline-lg">Decision support for vulnerable hillslopes</h2><p class="mt-4 text-body-md leading-6 text-slate-200">NE-SHIELD is a prototype that brings location-based susceptibility, rainfall-trigger, impact and priority calculations into one workflow. It is intended to support assessment and discussion; it is not an official warning system, live-monitoring service or guarantee of a future landslide.</p><div class="mt-7 flex flex-wrap gap-3"><a href="/?view=analyze" class="rounded-lg bg-[#93ccff] px-4 py-2 text-body-md font-semibold text-[#00233a] hover:bg-[#b8ddff]">Access Location Analysis</a><a href="/map" class="rounded-lg border border-white/20 px-4 py-2 text-body-md font-semibold text-white hover:bg-white/10">Explore Risk Map</a></div></div></div></div>
+                </section>
+                {% endif %}
+
+                <section class="{% if current_view != 'dashboard' or prediction %}hidden {% endif %}rounded-2xl bg-surface-container-lowest p-6 shadow-sm">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div>
+                            <h2 class="text-headline-lg font-headline-lg text-on-surface">Regional Landslide Risk Overview</h2>
+                            <p class="mt-1 text-body-md text-on-surface-variant">A regional view of landslide susceptibility classifications across North East India.</p>
+                        </div>
+                        <a href="/map" class="flex items-center gap-2 rounded-lg border border-outline-variant bg-surface px-4 py-2 text-body-md font-semibold text-on-surface transition-colors hover:bg-surface-container">
+                            <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                            Full-screen Risk Map
+                        </a>
+                    </div>
+
+                    <div class="regional-risk-card" style="background: url('{{ url_for('static', filename='mizoram-gis-landslide-bg.png') }}') center/cover no-repeat, #0b1f38;" role="img" aria-label="Regional terrain and landslide risk overview">
+                        <div class="regional-map-label"><strong>Regional terrain overview</strong><span>Susceptibility classifications across North East India</span></div>
+                    </div>
+                    <div class="regional-risk-stats" aria-label="Regional susceptibility summary">
+                        <div class="regional-risk-stat"><div class="label"><span class="risk-dot low"></span>Low susceptibility</div><div class="value">{{ low }}</div><div class="detail">Locations assessed</div></div>
+                        <div class="regional-risk-stat"><div class="label"><span class="risk-dot moderate"></span>Moderate susceptibility</div><div class="value">{{ moderate }}</div><div class="detail">Locations assessed</div></div>
+                        <div class="regional-risk-stat"><div class="label"><span class="risk-dot high"></span>High susceptibility</div><div class="value">{{ high }}</div><div class="detail">Locations assessed</div></div>
+                        <div class="regional-risk-stat"><div class="label"><span class="risk-dot very-high"></span>Very high susceptibility</div><div class="value">{{ very_high }}</div><div class="detail">Locations assessed</div></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="analysis-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#0b1c30]/60 p-4 backdrop-blur-sm">
+        <div class="max-h-[90vh] w-full max-w-2xl overflow-hidden rounded-2xl bg-surface-container-lowest shadow-2xl">
+            <div class="flex items-center justify-between bg-primary px-6 py-4 text-on-primary">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined">network_intelligence</span>
+                    <h3 class="text-headline-md font-headline-md text-white">NE-SHIELD Location Analyzer</h3>
+                </div>
+                <button type="button" data-close-analysis class="rounded-lg p-1 text-white transition-colors hover:bg-white/10">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div id="modal-form-content" class="p-6">
+                <form id="analysis-form" method="POST" action="/">
+                    <p class="mb-4 text-body-md text-on-surface-variant">Enter spatial coordinates and meteorological parameters to run the existing Flask landslide susceptibility model and impact assessment.</p>
+
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-label-md font-semibold text-on-surface">Latitude</label>
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" type="number" step="any" name="latitude" id="lat-input" value="{% if request.args.get('lat') %}{{ request.args.get('lat') }}{% elif prediction and not prediction.error %}{{ prediction.latitude }}{% endif %}" required />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-label-md font-semibold text-on-surface">Longitude</label>
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" type="number" step="any" name="longitude" id="lng-input" value="{% if request.args.get('lon') %}{{ request.args.get('lon') }}{% elif prediction and not prediction.error %}{{ prediction.longitude }}{% endif %}" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-label-md font-semibold text-on-surface">Rainfall last 24 hours (mm)</label>
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" type="number" min="0" step="any" name="rain_24h" value="{% if prediction and not prediction.error %}{{ prediction.rain_24h }}{% else %}0{% endif %}" required />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-label-md font-semibold text-on-surface">Rainfall last 72 hours (mm)</label>
+                            <input class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" type="number" min="0" step="any" name="rain_72h" value="{% if prediction and not prediction.error %}{{ prediction.rain_72h }}{% else %}0{% endif %}" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-label-md font-semibold text-on-surface">Road / transport affected?</label>
+                            <select class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" name="road_affected">
+                                <option value="no" {% if prediction and prediction.road_affected == 'no' %}selected{% endif %}>No</option>
+                                <option value="yes" {% if prediction and prediction.road_affected == 'yes' %}selected{% endif %}>Yes</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-label-md font-semibold text-on-surface">Village nearby?</label>
+                            <select class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" name="village_nearby">
+                                <option value="no" {% if prediction and prediction.village_nearby == 'no' %}selected{% endif %}>No</option>
+                                <option value="yes" {% if prediction and prediction.village_nearby == 'yes' %}selected{% endif %}>Yes</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-label-md font-semibold text-on-surface">Critical facility nearby?</label>
+                            <select class="rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" name="critical_facility">
+                                <option value="no" {% if prediction and prediction.critical_facility == 'no' %}selected{% endif %}>No</option>
+                                <option value="yes" {% if prediction and prediction.critical_facility == 'yes' %}selected{% endif %}>Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="text-label-md font-semibold text-on-surface">People potentially exposed</label>
+                        <input class="mt-1 w-full rounded border border-outline-variant bg-surface px-3 py-2 text-body-md text-on-surface focus:border-primary focus:outline-none" type="number" min="0" name="people_exposed" value="{% if prediction and not prediction.error %}{{ prediction.people_exposed }}{% else %}0{% endif %}" required />
+                    </div>
+
+                    <div class="mt-6 flex justify-end gap-3 border-t border-outline-variant/20 pt-4">
+                        <button type="button" data-close-analysis class="rounded-lg bg-surface-container px-4 py-2 text-body-md font-semibold text-on-surface transition-colors hover:bg-surface-container-high">Cancel</button>
+                        <button type="submit" class="flex items-center gap-2 rounded-lg bg-primary px-6 py-2 text-body-md font-semibold text-on-primary transition-all hover:bg-primary/90">
+                            <span class="material-symbols-outlined text-[18px]">play_arrow</span>
+                            Analyze location
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="modal-processing-content" class="hidden flex-col items-center justify-center gap-6 p-8">
+                <div class="h-16 w-16 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                <div class="text-center">
+                    <h4 class="text-headline-md font-headline-md text-on-surface">Running analysis model</h4>
+                    <p id="processing-step-text" class="mt-1 text-body-lg text-on-surface-variant">Preparing location analysis…</p>
+                </div>
+                <div class="h-2 w-full max-w-md overflow-hidden rounded-full bg-surface-container">
+                    <div id="progress-bar-fill" class="h-full w-0 bg-primary transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('analysis-modal');
+        const formContent = document.getElementById('modal-form-content');
+        const processingContent = document.getElementById('modal-processing-content');
+        const processingText = document.getElementById('processing-step-text');
+        const progressFill = document.getElementById('progress-bar-fill');
+        const analysisForm = document.getElementById('analysis-form');
+
+        function openAnalysisModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            formContent.classList.remove('hidden');
+            processingContent.classList.add('hidden');
+            progressFill.style.width = '0%';
+        }
+
+        function closeAnalysisModal() {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function showProcessingState() {
+            formContent.classList.add('hidden');
+            processingContent.classList.remove('hidden');
+            processingContent.classList.add('flex');
+
+            const steps = [
+                'Preparing location analysis…',
+                'Retrieving environmental reference data…',
+                'Running susceptibility model…',
+                'Evaluating rainfall trigger…',
+                'Calculating impact and priority…'
+            ];
+
+            let index = 0;
+
+            const interval = setInterval(() => {
+                if (index < steps.length) {
+                    processingText.textContent = steps[index];
+                    progressFill.style.width = ((index + 1) / steps.length) * 100 + '%';
+                    index += 1;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 450);
+        }
+
+        document.querySelectorAll('[data-open-analysis]').forEach((button) => {
+            button.addEventListener('click', openAnalysisModal);
+        });
+
+        document.querySelectorAll('[data-close-analysis]').forEach((button) => {
+            button.addEventListener('click', closeAnalysisModal);
+        });
+
+        if (analysisForm) {
+            analysisForm.addEventListener('submit', function () {
+                showProcessingState();
+            });
+        }
+
+        const analysisPageForm = document.getElementById('analysis-page-form');
+        const analysisPageProcessing = document.getElementById('analysis-page-processing');
+        if (analysisPageForm && analysisPageProcessing) {
+            analysisPageForm.addEventListener('submit', function () {
+                analysisPageForm.classList.add('hidden');
+                analysisPageProcessing.classList.remove('hidden');
+                analysisPageProcessing.classList.add('flex');
+            });
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('lat') && params.has('lon')) {
+            const latInput = document.getElementById('lat-input');
+            const lonInput = document.getElementById('lng-input');
+            if (latInput) latInput.value = params.get('lat');
+            if (lonInput) lonInput.value = params.get('lon');
+            openAnalysisModal();
+        }
+    </script>
 {% include '_ne_shield_intro.html' %}
-
-<header>
-
-    <div>
-        <div class="logo">
-            NE-<span>SHIELD</span>
-        </div>
-
-        <div class="tagline">
-            North-East Smart Hazard Intelligence & Emergency Landslide Decision Support
-        </div>
-    </div>
-
-    <div class="status">
-        ● Prototype Online
-    </div>
-
-</header>
-
-
-<div class="container">
-
-    <div class="hero">
-
-        <h1>
-            Mizoram Landslide Risk Intelligence Dashboard
-        </h1>
-
-        <p>
-            AI-assisted landslide susceptibility mapping,
-            rainfall-triggered early warning, impact assessment
-            and emergency response prioritization.
-        </p>
-
-    </div>
-
-
-    <!-- SUMMARY -->
-
-    <div class="cards">
-
-        <div class="card total">
-            <h3>TOTAL ANALYZED LOCATIONS</h3>
-            <div class="number">{{ total }}</div>
-        </div>
-
-        <div class="card low">
-            <h3>LOW SUSCEPTIBILITY</h3>
-            <div class="number">{{ low }}</div>
-        </div>
-
-        <div class="card moderate">
-            <h3>MODERATE SUSCEPTIBILITY</h3>
-            <div class="number">{{ moderate }}</div>
-        </div>
-
-        <div class="card high">
-            <h3>HIGH SUSCEPTIBILITY</h3>
-            <div class="number">{{ high }}</div>
-        </div>
-
-        <div class="card very-high">
-            <h3>VERY HIGH SUSCEPTIBILITY</h3>
-            <div class="number">{{ very_high }}</div>
-        </div>
-
-    </div>
-
-
-    <!-- WORKFLOW -->
-
-    <div class="section">
-
-        <h2>How NE-SHIELD Works</h2>
-
-        <p class="section-description">
-            NE-SHIELD combines environmental susceptibility,
-            recent rainfall conditions and local exposure information
-            into one decision-support pipeline.
-        </p>
-
-
-        <div class="workflow">
-
-            <div class="workflow-step">
-                <div class="workflow-number">1</div>
-                <strong>Location</strong>
-            </div>
-
-            <div class="workflow-arrow">→</div>
-
-            <div class="workflow-step">
-                <div class="workflow-number">2</div>
-                <strong>Environmental Data</strong>
-            </div>
-
-            <div class="workflow-arrow">→</div>
-
-            <div class="workflow-step">
-                <div class="workflow-number">3</div>
-                <strong>ML Susceptibility</strong>
-            </div>
-
-            <div class="workflow-arrow">→</div>
-
-            <div class="workflow-step">
-                <div class="workflow-number">4</div>
-                <strong>Rainfall Trigger</strong>
-            </div>
-
-            <div class="workflow-arrow">→</div>
-
-            <div class="workflow-step">
-                <div class="workflow-number">5</div>
-                <strong>Early Warning</strong>
-            </div>
-
-            <div class="workflow-arrow">→</div>
-
-            <div class="workflow-step">
-                <div class="workflow-number">6</div>
-                <strong>Impact Analysis</strong>
-            </div>
-
-            <div class="workflow-arrow">→</div>
-
-            <div class="workflow-step">
-                <div class="workflow-number">7</div>
-                <strong>Emergency Priority</strong>
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ANALYSIS -->
-
-    <div class="section">
-
-        <h2>Analyze a Location</h2>
-
-        <p class="section-description">
-            Select a coordinate and provide recent rainfall and exposure
-            information. Environmental features are automatically obtained
-            from the nearest reference point in the prototype dataset.
-        </p>
-
-
-        <form method="POST">
-
-            <h3 class="form-heading">
-                1. Geographic Location
-            </h3>
-
-
-            <div class="form-grid">
-
-                <div class="input-group">
-
-                    <label>Latitude</label>
-
-                    <input
-                        type="number"
-                        step="any"
-                        name="latitude"
-                        placeholder="Example: 23.73"
-                        value="{% if prediction and not prediction.error %}{{ prediction.latitude }}{% endif %}"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label>Longitude</label>
-
-                    <input
-                        type="number"
-                        step="any"
-                        name="longitude"
-                        placeholder="Example: 92.72"
-                        value="{% if prediction and not prediction.error %}{{ prediction.longitude }}{% endif %}"
-                        required
-                    >
-
-                </div>
-
-            </div>
-
-
-            <div class="location-note">
-                Enter a coordinate within the current Mizoram prototype
-                study area. NE-SHIELD will automatically find the nearest
-                environmental reference point.
-            </div>
-
-
-            <h3 class="form-heading">
-                2. Recent Rainfall Conditions
-            </h3>
-
-
-            <div class="form-grid">
-
-                <div class="input-group">
-
-                    <label>Rainfall in Last 24 Hours (mm)</label>
-
-                    <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        name="rain_24h"
-                        placeholder="Example: 125"
-                        value="{% if prediction and not prediction.error %}{{ prediction.rain_24h }}{% endif %}"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label>Rainfall in Last 72 Hours (mm)</label>
-
-                    <input
-                        type="number"
-                        step="any"
-                        min="0"
-                        name="rain_72h"
-                        placeholder="Example: 240"
-                        value="{% if prediction and not prediction.error %}{{ prediction.rain_72h }}{% endif %}"
-                        required
-                    >
-
-                </div>
-
-            </div>
-
-
-            <h3 class="form-heading">
-                3. Impact & Exposure
-            </h3>
-
-
-            <div class="form-grid">
-
-                <div class="input-group">
-
-                    <label>Road / Transport Route Affected?</label>
-
-                    <select name="road_affected">
-
-                        <option value="no"
-                            {% if prediction and prediction.road_affected == "no" %}selected{% endif %}>
-                            No
-                        </option>
-
-                        <option value="yes"
-                            {% if prediction and prediction.road_affected == "yes" %}selected{% endif %}>
-                            Yes
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label>Village / Settlement Nearby?</label>
-
-                    <select name="village_nearby">
-
-                        <option value="no"
-                            {% if prediction and prediction.village_nearby == "no" %}selected{% endif %}>
-                            No
-                        </option>
-
-                        <option value="yes"
-                            {% if prediction and prediction.village_nearby == "yes" %}selected{% endif %}>
-                            Yes
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label>Critical Facility Nearby?</label>
-
-                    <select name="critical_facility">
-
-                        <option value="no"
-                            {% if prediction and prediction.critical_facility == "no" %}selected{% endif %}>
-                            No
-                        </option>
-
-                        <option value="yes"
-                            {% if prediction and prediction.critical_facility == "yes" %}selected{% endif %}>
-                            Yes
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <div class="input-group">
-
-                    <label>People Potentially Exposed</label>
-
-                    <input
-                        type="number"
-                        min="0"
-                        name="people_exposed"
-                        value="{% if prediction and not prediction.error %}{{ prediction.people_exposed }}{% else %}0{% endif %}"
-                        required
-                    >
-
-                </div>
-
-            </div>
-
-
-            <button class="analyze-btn" type="submit">
-                Analyze Location & Generate Warning
-            </button>
-
-        </form>
-
-
-        {% if prediction %}
-
-            {% if prediction.error %}
-
-                <div class="error-box">
-                    <strong>Analysis Error:</strong>
-                    {{ prediction.error }}
-                </div>
-
-            {% else %}
-
-
-                <div class="result-container">
-
-                    <h3 class="form-heading">
-                        Analysis Result
-                    </h3>
-
-
-                    <div class="result-grid">
-
-                        <div class="result-card">
-
-                            <h4>Selected Location</h4>
-
-                            <div class="result-value">
-                                {{ prediction.latitude }},
-                                {{ prediction.longitude }}
-                            </div>
-
-                        </div>
-
-
-                        <div class="result-card">
-
-                            <h4>Reference Distance</h4>
-
-                            <div class="result-value">
-                                {{ prediction.nearest_distance }} km
-                            </div>
-
-                        </div>
-
-
-                        <div class="result-card">
-
-                            <h4>Reference Coordinate</h4>
-
-                            <div class="result-value">
-                                {{ prediction.nearest_latitude }},
-                                {{ prediction.nearest_longitude }}
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- AUTOMATIC DATA -->
-
-                    <div class="auto-data-box">
-
-                        <h3>
-                            Automatically Retrieved Environmental Data
-                        </h3>
-
-                        <p>
-                            Static environmental features used by the
-                            Random Forest susceptibility model.
-                        </p>
-
-
-                        <div class="environment-grid">
-
-                            <div class="environment-card">
-
-                                <strong>Annual Rainfall</strong>
-
-                                <span>
-                                    {{ prediction.rainfall }} mm/year
-                                </span>
-
-                                <small class="source">
-                                    Source: NASA IMERG climatology
-                                </small>
-
-                            </div>
-
-
-                            <div class="environment-card">
-
-                                <strong>Elevation</strong>
-
-                                <span>
-                                    {{ prediction.elevation }} m
-                                </span>
-
-                                <small class="source">
-                                    Source: NASA SRTM
-                                </small>
-
-                            </div>
-
-
-                            <div class="environment-card">
-
-                                <strong>Slope</strong>
-
-                                <span>
-                                    {{ prediction.slope }}°
-                                </span>
-
-                                <small class="source">
-                                    Derived from NASA SRTM DEM
-                                </small>
-
-                            </div>
-
-
-                            <div class="environment-card">
-
-                                <strong>Clay</strong>
-
-                                <span>
-                                    {{ prediction.clay }} g/kg
-                                </span>
-
-                                <small class="source">
-                                    Source: ISRIC SoilGrids
-                                </small>
-
-                            </div>
-
-
-                            <div class="environment-card">
-
-                                <strong>Sand</strong>
-
-                                <span>
-                                    {{ prediction.sand }} g/kg
-                                </span>
-
-                                <small class="source">
-                                    Source: ISRIC SoilGrids
-                                </small>
-
-                            </div>
-
-
-                            <div class="environment-card">
-
-                                <strong>Silt</strong>
-
-                                <span>
-                                    {{ prediction.silt }} g/kg
-                                </span>
-
-                                <small class="source">
-                                    Source: ISRIC SoilGrids
-                                </small>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="reference-box">
-
-                            <strong>Nearest Environmental Reference:</strong>
-
-                            {{ prediction.nearest_latitude }},
-                            {{ prediction.nearest_longitude }}
-
-                            <br>
-
-                            <strong>Distance:</strong>
-                            {{ prediction.nearest_distance }} km
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- ML -->
-
-                    <h3 class="form-heading">
-                        AI Landslide Susceptibility Analysis
-                    </h3>
-
-
-                    <div class="result-grid">
-
-                        <div class="result-card">
-
-                            <h4>ML Susceptibility Class</h4>
-
-                            <div class="
-                                result-value
-                                risk-{{ prediction.risk | replace(' ', '-') }}
-                            ">
-                                {{ prediction.risk }}
-                            </div>
-
-                        </div>
-
-
-                        <div class="result-card">
-
-                            <h4>Susceptibility Score</h4>
-
-                            <div class="result-value">
-                                {{ prediction.score }}%
-                            </div>
-
-                        </div>
-
-
-                        <div class="result-card">
-
-                            <h4>Rainfall Trigger</h4>
-
-                            <div class="
-                                result-value
-                                risk-{{ prediction.rainfall_trigger | replace(' ', '-') }}
-                            ">
-                                {{ prediction.rainfall_trigger }}
-                            </div>
-
-                        </div>
-
-
-                        <div class="result-card">
-
-                            <h4>Recent 24h Rainfall</h4>
-
-                            <div class="result-value">
-                                {{ prediction.rain_24h }} mm
-                            </div>
-
-                        </div>
-
-
-                        <div class="result-card">
-
-                            <h4>Recent 72h Rainfall</h4>
-
-                            <div class="result-value">
-                                {{ prediction.rain_72h }} mm
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- WARNING -->
-
-                    <div class="
-                        warning-box
-                        warning-{{ prediction.warning | replace(' ', '-') }}
-                    ">
-
-                        <h3>
-                            CURRENT LANDSLIDE EARLY WARNING
-                        </h3>
-
-                        <div class="warning-value">
-                            {{ prediction.warning }}
-                        </div>
-
-                    </div>
-
-
-                    <!-- IMPACT -->
-
-                    <h3 class="form-heading">
-                        Impact Assessment
-                    </h3>
-
-
-                    <div class="impact-grid">
-
-                        <div class="impact-card">
-
-                            <strong>Road Affected</strong>
-
-                            {% if prediction.road_affected == "yes" %}
-                                YES
-                            {% else %}
-                                NO
-                            {% endif %}
-
-                        </div>
-
-
-                        <div class="impact-card">
-
-                            <strong>Settlement Nearby</strong>
-
-                            {% if prediction.village_nearby == "yes" %}
-                                YES
-                            {% else %}
-                                NO
-                            {% endif %}
-
-                        </div>
-
-
-                        <div class="impact-card">
-
-                            <strong>Critical Facility</strong>
-
-                            {% if prediction.critical_facility == "yes" %}
-                                YES
-                            {% else %}
-                                NO
-                            {% endif %}
-
-                        </div>
-
-
-                        <div class="impact-card">
-
-                            <strong>People Exposed</strong>
-
-                            {{ prediction.people_exposed }}
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- PRIORITY -->
-
-                    <div class="
-                        priority-box
-                        priority-{{ prediction.priority }}
-                    ">
-
-                        <h3>
-                            EMERGENCY RESPONSE PRIORITY
-                        </h3>
-
-                        <div class="priority-value">
-                            {{ prediction.priority }}
-                        </div>
-
-                        <div class="priority-score">
-                            Decision Priority Score:
-                            <strong>
-                                {{ prediction.priority_score }}
-                            </strong>
-                        </div>
-
-                        <div class="recommended-action">
-
-                            <strong>Recommended Action</strong>
-
-                            <br><br>
-
-                            {{ prediction.recommended_action }}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            {% endif %}
-
-        {% endif %}
-
-    </div>
-
-
-    <!-- MAP -->
-
-    <div class="section">
-
-        <h2>
-            GIS Landslide Susceptibility Map
-        </h2>
-
-        <p class="section-description">
-            Spatial visualization of model-derived susceptibility
-            across the Mizoram prototype study area.
-        </p>
-
-
-        {% if prediction and not prediction.error %}
-
-            <div class="map-selected-note">
-
-                <strong>Selected Analysis Location:</strong>
-
-                {{ prediction.latitude }},
-                {{ prediction.longitude }}
-
-                <br>
-
-                The highlighted blue marker represents the
-                location currently being analyzed.
-
-            </div>
-
-
-            <iframe
-                src="/map?lat={{ prediction.latitude }}&lon={{ prediction.longitude }}&risk={{ prediction.risk | urlencode }}&warning={{ prediction.warning | urlencode }}&priority={{ prediction.priority | urlencode }}"
-                class="map-frame">
-            </iframe>
-
-        {% else %}
-
-            <iframe
-                src="/map"
-                class="map-frame">
-            </iframe>
-
-        {% endif %}
-
-    </div>
-
-
-    <!-- DATA SOURCES -->
-
-    <div class="section">
-
-        <h2>
-            Prototype Data Sources
-        </h2>
-
-        <p class="section-description">
-            NE-SHIELD combines multiple geospatial datasets instead
-            of relying on a single environmental variable.
-        </p>
-
-
-        <div class="source-grid">
-
-            <div class="source-card">
-
-                <h4>Landslide Inventory</h4>
-
-                <p>
-                    Geological Survey of India (GSI)
-                    landslide inventory used to construct
-                    the prototype training dataset.
-                </p>
-
-            </div>
-
-
-            <div class="source-card">
-
-                <h4>Rainfall</h4>
-
-                <p>
-                    NASA IMERG Final V07B climatology,
-                    June 2000–May 2023.
-                </p>
-
-            </div>
-
-
-            <div class="source-card">
-
-                <h4>Terrain</h4>
-
-                <p>
-                    NASA SRTMGL1 V003 elevation data.
-                    Terrain slope is derived from the DEM.
-                </p>
-
-            </div>
-
-
-            <div class="source-card">
-
-                <h4>Soil</h4>
-
-                <p>
-                    ISRIC SoilGrids clay, sand and silt
-                    composition for the surface soil layer.
-                </p>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- MODEL / LIMITATIONS -->
-
-    <div class="info-grid">
-
-        <div class="info-box">
-
-            <h3>
-                AI Model
-            </h3>
-
-            <p>
-                <strong>Algorithm:</strong>
-                Random Forest Classifier
-            </p>
-
-            <p>
-                <strong>Features:</strong>
-                annual rainfall, elevation, slope,
-                clay, sand and silt.
-            </p>
-
-            <p>
-                <strong>Prototype Test Accuracy:</strong>
-                83.82%
-            </p>
-
-            <p>
-                <strong>ROC-AUC:</strong>
-                0.9059
-            </p>
-
-            <p>
-                The model estimates environmental
-                <strong>landslide susceptibility</strong>.
-            </p>
-
-        </div>
-
-
-        <div class="info-box">
-
-            <h3>
-                Prototype Scope & Limitations
-            </h3>
-
-            <p>
-                NE-SHIELD is currently demonstrated using
-                Mizoram as the prototype study area.
-            </p>
-
-            <div class="prototype-note">
-
-                <strong>Important:</strong><br><br>
-
-                The ML susceptibility score is not a guaranteed
-                probability of a future landslide.
-
-                <br><br>
-
-                Recent rainfall thresholds are configurable
-                prototype thresholds and are not official
-                operational GSI thresholds.
-
-                <br><br>
-
-                Emergency response priority is a transparent
-                rule-based decision-support score for the prototype.
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<footer>
-    NE-SHIELD — AI-Powered Landslide Risk Intelligence,
-    Early Warning & Emergency Decision Support
-</footer>
-
 </body>
 </html>

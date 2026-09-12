@@ -1,0 +1,27 @@
+{% if current_view == 'dashboard' and not prediction %}
+<style>
+  #ne-shield-startup { position:fixed; inset:0; z-index:2147483646; display:grid; place-items:center; overflow:hidden; color:#eaf6ff; background:radial-gradient(ellipse at center,#0b3151 0%,#06101e 55%,#02060c 100%); transition:opacity .65s ease,visibility .65s ease; }
+  #ne-shield-startup::before { content:''; position:absolute; inset:0; opacity:.35; background:linear-gradient(#35bdf51a 1px,transparent 1px),linear-gradient(90deg,#35bdf51a 1px,transparent 1px); background-size:48px 48px; }
+  #ne-shield-startup.is-gone { opacity:0; visibility:hidden; pointer-events:none; }
+  .ns-startup-card { position:relative; text-align:center; padding:2rem; }
+  .ns-startup-radar { width:180px; height:180px; margin:auto auto 1.75rem; border:1px solid #38bdf899; border-radius:50%; background:repeating-radial-gradient(circle,#38bdf812 0 1px,transparent 2px 38px); box-shadow:0 0 45px #0ea5e955; animation:nsPulse 1.8s ease-in-out infinite; }
+  .ns-startup-radar::after { content:''; display:block; width:50%; height:50%; margin:50% 0 0 50%; transform-origin:0 0; background:linear-gradient(45deg,#38bdf855,transparent 65%); animation:nsSweep 1.4s linear infinite; }
+  @keyframes nsPulse { 50% { box-shadow:0 0 72px #38bdf899; } } @keyframes nsSweep { to { transform:rotate(360deg); } }
+</style>
+<div id="ne-shield-startup" role="status" aria-label="Loading NE-SHIELD">
+  <div class="ns-startup-card"><div class="ns-startup-radar"></div><div style="letter-spacing:.32em;color:#7dd3fc;font:600 12px/1.5 monospace">LANDSLIDE RISK ASSESSMENT</div><h1 style="margin:.45rem 0;font:800 clamp(2.6rem,8vw,4.5rem)/1 Inter,sans-serif">NE-<span style="color:#38bdf8">SHIELD</span></h1><p style="margin:0;color:#b7cadd;font:500 13px/1.5 monospace">PREPARING OPERATIONAL DASHBOARD…</p></div>
+</div>
+<script>
+  (function () {
+    var intro = document.getElementById('ne-shield-startup');
+    if (!intro) return;
+    if (sessionStorage.getItem('neShieldStartupSeen')) { intro.remove(); return; }
+    sessionStorage.setItem('neShieldStartupSeen', 'true');
+    window.neShieldStartupActive = true;
+    setTimeout(function () {
+      intro.classList.add('is-gone');
+      setTimeout(function () { intro.remove(); window.neShieldStartupActive = false; }, 700);
+    }, 2600);
+  }());
+</script>
+{% endif %}
